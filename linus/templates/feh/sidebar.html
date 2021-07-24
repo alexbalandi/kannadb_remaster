@@ -1,0 +1,40 @@
+{% load staticfiles %}
+
+{% for filter in filters %}
+  <span class='text-center'>
+    {% if filter.title %}
+      <div class='text-center'>{{ filter.title }}</div>
+    {% endif %}
+
+    <div class='{{ filter.btn_class }}'>
+      {% for content in filter.content %}
+        <button type="button" class="btn btn-default {{ filter.id }}-btn btn-sm" data-id="{{ content.id }}"
+          {% if content.1.2 %}
+            data-tippy-content="{{ content.1.2 }}"
+          {% endif %}
+        >
+          {% if content.1.0 == 'txt' %}
+            {{ content.1.1 }}
+          {% elif content.1.0 == 'img' %}
+            <img height="30pt" src="{{ content.1.1 }}">
+          {% endif %}
+        </button>
+      {% endfor %}
+    </div>
+  </span>
+{% endfor %}
+
+<div class='card card-body bg-dark'>
+{% for stat in stats %}
+  <p>
+    {{ stat.title }}: <span id="stat-range-slider-display-{{ stat.title }}"></span>
+    <div
+      class="stat-range-slider-widget"
+      data-for="stat-range-slider-display-{{ stat.title }}"
+      data-min="{{ stat.min }}"
+      data-max="{{ stat.max }}"
+      data-index ="{{ stat.index }}"
+    ></div>
+  </p>
+{% endfor %}
+</div>
