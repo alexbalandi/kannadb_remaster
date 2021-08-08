@@ -754,7 +754,7 @@ class Hero(models.Model):
 
     @property
     def game_code(self):
-        return TEXT_TO_GAME_MAP.get(self.origin_game)
+        return TEXT_TO_GAME_MAP.get(self.origin_game, "")
 
     @property
     def weapon_type_icon(self):
