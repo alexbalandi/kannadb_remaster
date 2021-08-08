@@ -15,7 +15,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -283,7 +282,6 @@ pip-selfcheck.json
 linus/media/
 
 .pytest_cache/
-
 
 .env
 .envs/*
