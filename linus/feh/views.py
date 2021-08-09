@@ -514,7 +514,8 @@ class SkillsList(TemplateView):
         context["ajax_url_name"] = ajax_url_name
 
         skills = list(skills)
-        heroes = context["heroes"]
+        heroes = list(models.Hero.objects.all().order_by("name", "title"))
+        context["heroes"] = heroes
 
         context["stats"] = get_skill_stat_sliders(skills)
 

@@ -148,22 +148,22 @@ GAME_PAIRS = (
 GAME_READABLE = dict(GAME_PAIRS)
 
 TEXT_TO_GAME_MAP = {
-    "Awakening": GAME.CHROM,
-    "Echoes: Shadows of Valentia": GAME.ALM,
-    "Fates": GAME.CORRIN,
-    "Genealogy of the Holy War": GAME.SELIPH,
-    "Heroes": GAME.ALFONSE,
-    "Mystery of the Emblem": GAME.MARTH,
-    "New Mystery of the Emblem": GAME.MARTH,
-    "Path of Radiance": GAME.IKE,
-    "Radiant Dawn": GAME.MICAIAH,
-    "Shadow Dragon and the Blade of Light": GAME.MARTH,
-    "The Binding Blade": GAME.ROY,
-    "The Blazing Blade": GAME.LYN,
-    "The Sacred Stones": GAME.EPHRAIM,
-    "Thracia 776": GAME.LEIF,
-    "Three Houses": GAME.SOTHIS,
+    "Fire Emblem Fates": GAME.CORRIN,
+    "Fire Emblem: The Blazing Blade": GAME.LYN,
+    "Fire Emblem: The Binding Blade": GAME.ROY,
     "Tokyo Mirage Sessions ♯FE Encore": GAME.ITSUKI,
+    "Fire Emblem: Radiant Dawn": GAME.MICAIAH,
+    "Fire Emblem Heroes": GAME.ALFONSE,
+    "Fire Emblem: Mystery of the Emblem": GAME.MARTH,
+    "Fire Emblem Awakening": GAME.CHROM,
+    "Fire Emblem: Path of Radiance": GAME.IKE,
+    "Fire Emblem: Thracia 776": GAME.LEIF,
+    "Fire Emblem: New Mystery of the Emblem": GAME.MARTH,
+    "Fire Emblem: Three Houses": GAME.SOTHIS,
+    "Fire Emblem: Genealogy of the Holy War": GAME.SELIPH,
+    "Fire Emblem: The Sacred Stones": GAME.EPHRAIM,
+    "Fire Emblem Echoes: Shadows of Valentia": GAME.ALM,
+    "Fire Emblem: Shadow Dragon and the Blade of Light": GAME.MARTH,
 }
 
 

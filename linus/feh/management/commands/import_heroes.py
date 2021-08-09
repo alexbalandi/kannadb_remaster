@@ -152,12 +152,6 @@ class Command(BaseCommand):
                 boonbanes.append(res)
 
             origin = hero.origin
-            flen = len("Fire Emblem: ")
-            if origin.startswith("Fire Emblem: "):
-                origin = origin[flen:]
-            if origin.startswith("Fire Emblem "):
-                origin = origin[flen:]
-
             """
       # The following actually resides in a method of my model
       if hero.iconURL:
