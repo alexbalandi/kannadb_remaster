@@ -177,7 +177,7 @@ $(document).ready(function () {
       { data: 'gender' },
       { data: 'is_dancer' },
 
-      { data: 'StandardDeviation' },
+      { data: 'minmax_rating' },
       { data: 'availability_human' },
       { data: 'has_resplendent' },
       { data: 'season' },
@@ -219,7 +219,7 @@ $(document).ready(function () {
     $(this).toggleClass("active");
     $(this).hide();
     var $next = $(this).next();
-    if ($next.length) {}
+    if ($next.length) { }
     else {
       $next = $(this).siblings().first();
     }
@@ -238,7 +238,7 @@ $(document).ready(function () {
     $(this).toggleClass("active");
     $(this).hide();
     var $next = $(this).next();
-    if ($next.length) {}
+    if ($next.length) { }
     else {
       $next = $(this).siblings().first();
     }

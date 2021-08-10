@@ -319,7 +319,7 @@ def HeroesListAjax(request):
         herodata["stripped_name"] = hero.stripped_name
         herodata["gender"] = hero.gender
         herodata["is_dancer"] = hero.is_dancer
-        herodata["StandardDeviation"] = "%.3f" % hero.StandardDeviation
+        herodata["minmax_rating"] = "%.3f" % hero.minmax_rating
 
         herodata["availability_human"] = hero.availability_human
         herodata["has_resplendent"] = hero.has_resplendent

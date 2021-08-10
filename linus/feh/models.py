@@ -784,6 +784,10 @@ class Hero(models.Model):
             sumsquare += (stat - average) ** 2.0
         return (sumsquare / 5) ** 0.5
 
+    @property
+    def minmax_rating(self):
+        return self.StandardDeviation / self.bst * 5
+
     def __str__(self):
         return "{0}: {1}".format(self.name, self.title)
 
