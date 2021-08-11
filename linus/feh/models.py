@@ -86,67 +86,6 @@ class GAME(object):
     ITSUKI = "G_14_ITSUKI"
 
 
-GAME_PAIRS = (
-    (
-        GAME.ALFONSE,
-        "Fire Emblem Heroes",
-    ),
-    (
-        GAME.MARTH,
-        "Mystery of the Emblem / Shadow Dragon",
-    ),
-    (
-        GAME.ALM,
-        "Echoes: Shadows of Valentia",
-    ),
-    (
-        GAME.SELIPH,
-        "Genealogy of the Holy War",
-    ),
-    (
-        GAME.LEIF,
-        "Thracia 776",
-    ),
-    (
-        GAME.ROY,
-        "The Binding Blade",
-    ),
-    (
-        GAME.LYN,
-        "The Blazing Blade",
-    ),
-    (
-        GAME.EPHRAIM,
-        "The Sacred Stones",
-    ),
-    (
-        GAME.IKE,
-        "Path of Radiance",
-    ),
-    (
-        GAME.MICAIAH,
-        "Radiant Dawn",
-    ),
-    (
-        GAME.CHROM,
-        "Awakening",
-    ),
-    (
-        GAME.CORRIN,
-        "Fates",
-    ),
-    (
-        GAME.SOTHIS,
-        "Three Houses",
-    ),
-    (
-        GAME.ITSUKI,
-        "Tokyo Mirage Sessions",
-    ),
-)
-
-GAME_READABLE = dict(GAME_PAIRS)
-
 TEXT_TO_GAME_MAP = {
     "Fire Emblem Fates": GAME.CORRIN,
     "Fire Emblem: The Blazing Blade": GAME.LYN,
@@ -165,6 +104,8 @@ TEXT_TO_GAME_MAP = {
     "Fire Emblem Echoes: Shadows of Valentia": GAME.ALM,
     "Fire Emblem: Shadow Dragon and the Blade of Light": GAME.MARTH,
 }
+
+GAME_READABLE = {v: k for k, v in TEXT_TO_GAME_MAP.items()}
 
 
 class MOVEMENT_TYPE(object):
