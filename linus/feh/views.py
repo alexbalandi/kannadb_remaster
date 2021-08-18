@@ -327,6 +327,7 @@ def HeroesListAjax(request):
         herodata["harmonized_skill"] = hero.harmonized_skill
         herodata["artist"] = hero.artist
         herodata["alias"] = hero.alias
+        herodata["dragonflowers"] = hero.dragonflowers
 
         data.append(herodata)
 

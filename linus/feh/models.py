@@ -437,6 +437,9 @@ BOOK_BEGIN_DATES = [
 ]
 
 
+GENERATION_MAX = 6
+
+
 def upload_to_dir(instance, filename):
     return "heroes_icons/{0}.webp".format(instance.stripped_name.replace(" ", "-"))
 
@@ -514,14 +517,21 @@ class Hero(models.Model):
     #                               blank=True,
     #                               null=True,)
 
-    def get_neutral_max_stats(self):
+    def get_max_dragonflower_per_stat(self):
         dragonflowers = 1
         if self.movement_type == MOVEMENT_TYPE.INFANTRY and self.release_date <= date(
             day=7, month=2, year=2019
         ):
             dragonflowers = 2
-        if self.generation < 5:
-            dragonflowers += 1
+        dragonflowers += min(2, GENERATION_MAX - self.generation)
+        return dragonflowers
+
+    @property
+    def dragonflowers(self):
+        return self.get_max_dragonflower_per_stat() * 5
+
+    def get_neutral_max_stats(self):
+        dragonflowers = self.get_max_dragonflower_per_stat()
         add_stats = 4 + dragonflowers
         if self.has_resplendent:
             add_stats += 2
@@ -618,13 +628,7 @@ class Hero(models.Model):
         return base + 3
 
     def get_neutral_adjusted_stats(self):
-        dragonflowers = 0
-        if self.movement_type == MOVEMENT_TYPE.INFANTRY and self.release_date <= date(
-            day=7, month=2, year=2019
-        ):
-            dragonflowers = 1
-        if self.generation < 5:
-            dragonflowers += 1
+        dragonflowers = self.get_max_dragonflower_per_stat() - 1
         add_stats = dragonflowers
         if self.has_resplendent:
             add_stats += 2
@@ -742,6 +746,8 @@ class Hero(models.Model):
         ]:
             return 3
 
+        if self.release_date >= date(day=12, month=8, year=2021):
+            return 6
         if self.release_date >= date(day=15, month=8, year=2020):
             return 5
         if self.release_date >= date(day=16, month=8, year=2019):
