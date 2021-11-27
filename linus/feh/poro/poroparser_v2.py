@@ -125,6 +125,8 @@ def parseRawUnit(rawUnit):
         h.heroSrc = "Mythic"
     elif "story" in properties:
         h.heroSrc = "Story"
+    elif "ascended" in properties:
+        h.heroSrc = "Ascended"
     # will get overwritten by duo/leg/mythic
     # if for some reason theres an inconsistency
     # in the properties
