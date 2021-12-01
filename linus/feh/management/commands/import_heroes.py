@@ -30,7 +30,7 @@ AV_MAP = dict(
     Legendary=AVAILABILITY.LEGENDARY,
     Duo=AVAILABILITY.DUO,
     Harmonized=AVAILABILITY.HARMONIZED,
-    Ascendant=AVAILABILITY.ASCENDANT,
+    Ascended=AVAILABILITY.ASCENDANT,
 )
 
 MV_MAP = dict(
@@ -65,6 +65,15 @@ WP_MAP = {
     "Green Breath": WEAPON_TYPE.G_DRAGON,
     "Colorless Breath": WEAPON_TYPE.C_DRAGON,
     "Colorless Staff": WEAPON_TYPE.C_STAFF,
+}
+
+WP_EXPANSION = {
+    "Dragon": [
+        "Red Breath",
+        "Blue Breath",
+        "Green Breath",
+        "Colorless Breath",
+    ]
 }
 
 COLOR_MAP = dict(
@@ -231,6 +240,7 @@ class Command(BaseCommand):
 
         for skilltype, skill, ismax in combin:
             description = skill.desc
+
             if skilltype == "seal":
                 skill_slot = WEAPON_TYPE.SACRED_SEAL
             elif skill.slot != "weapon":
@@ -252,8 +262,15 @@ class Command(BaseCommand):
                                 )
                             )
 
+            cleaned_weapon_perms = []
+            for weapon_perm in skill.weaponPerms:
+                if weapon_perm in WP_EXPANSION:
+                    cleaned_weapon_perms.extend(WP_EXPANSION[weapon_perm])
+                else:
+                    cleaned_weapon_perms.append(weapon_perm)
+
             weapon_perms = sorted(
-                list(set([WEAPON_SLOT_MAP[WP_MAP[wp]] for wp in skill.weaponPerms]))
+                list(set([WEAPON_SLOT_MAP[WP_MAP[wp]] for wp in cleaned_weapon_perms]))
             )
             movement_perms = sorted(list(set([MV_MAP[mv] for mv in skill.movePerms])))
 

@@ -9,65 +9,72 @@ import pytz
 from w3lib.html import replace_entities
 from .poroclasses import Skill, Refine, Seal, Hero, SkillReq, Availability
 
+
 def removeEmptyStrings(arr):
     return [a for a in arr if not a == ""]
 
+
 def parseRawSkill(rawSkill):
     s = Skill()
-    s.name = rawSkill['Name']
-    s.wikiName = rawSkill['WikiName']
-    s.isRefine = not '' == rawSkill['RefinePath']
-    s.refineType = rawSkill['RefinePath']
-    s.isPrf = '1' == rawSkill['Exclusive'] and not s.isRefine
-    s.cost = tryStrToInt(rawSkill['SP'])
-    s.range = tryStrToInt(rawSkill['UseRange'])
+    s.name = rawSkill["Name"]
+    s.wikiName = rawSkill["WikiName"]
+    s.isRefine = not "" == rawSkill["RefinePath"]
+    s.refineType = rawSkill["RefinePath"]
+    s.isPrf = "1" == rawSkill["Exclusive"] and not s.isRefine
+    s.cost = tryStrToInt(rawSkill["SP"])
+    s.range = tryStrToInt(rawSkill["UseRange"])
     # TODO: prettify it later
-    s.desc = replace_entities(rawSkill['Description'].replace("&lt;br&gt;", "\n"))
-    s.slot = rawSkill['Scategory']
+    s.desc = replace_entities(rawSkill["Description"].replace("&lt;br&gt;", "\n"))
+    s.slot = rawSkill["Scategory"]
     if s.slot == "sacredseal":
         s.isSeal = True
-    s.cd = tryStrToInt(rawSkill['Cooldown'])
-    s.page = rawSkill['Page']
-    s.url = "https://feheroes.gamepedia.com/" + html.unescape(s.page).replace(" ", "_").replace("\"","%22");
+    s.cd = tryStrToInt(rawSkill["Cooldown"])
+    s.page = rawSkill["Page"]
+    s.url = "https://feheroes.gamepedia.com/" + html.unescape(s.page).replace(
+        " ", "_"
+    ).replace('"', "%22")
     # s.url = "https://feheroes.gamepedia.com/" + urllib.parse.quote(s.page)
     # split because Aether <= Sol,Luna
-    s.required = re.split("\\s*,\\s*", rawSkill['Required'])
+    s.required = re.split("\\s*,\\s*", rawSkill["Required"])
     s.required = removeEmptyStrings(s.required)
-    s.next = re.split("\\s*,\\s*", rawSkill['Next'])
+    s.next = re.split("\\s*,\\s*", rawSkill["Next"])
     s.next = removeEmptyStrings(s.next)
-    s.movePerms = re.split("\\s*,\\s*", rawSkill['CanUseMove'])
+    s.movePerms = re.split("\\s*,\\s*", rawSkill["CanUseMove"])
     s.movePerms = removeEmptyStrings(s.movePerms)
-    s.weaponPerms = re.split("\\s*,\\s*", rawSkill['CanUseWeapon'])
+    s.weaponPerms = re.split("\\s*,\\s*", rawSkill["CanUseWeapon"])
     s.weaponPerms = removeEmptyStrings(s.weaponPerms)
-    s.properties = re.split("\\s*,\\s*", rawSkill['Properties'])
+    s.properties = re.split("\\s*,\\s*", rawSkill["Properties"])
     s.properties = removeEmptyStrings(s.properties)
     s.isEnemyOnly = "enemy_only" in s.properties
-    s.stats = rawSkill['StatModifiers']
+    s.stats = rawSkill["StatModifiers"]
     return s
 
+
 def parseRawUpgrade(rawUpgrade, allSkills):
-    baseWeapKey = rawUpgrade['BaseWeapon']
-    intoWeapKey = rawUpgrade['UpgradesInto']
+    baseWeapKey = rawUpgrade["BaseWeapon"]
+    intoWeapKey = rawUpgrade["UpgradesInto"]
     r = Refine()
     baseWeap = allSkills[baseWeapKey]
     intoWeap = allSkills[intoWeapKey]
     r.skill = intoWeap
     r.refineType = intoWeap.refineType
-    r.statChange = rawUpgrade['StatModifiers']
-    r.desc = replace_entities(rawUpgrade['AddedDesc'].replace("&lt;br&gt;", "\n"))
+    r.statChange = rawUpgrade["StatModifiers"]
+    r.desc = replace_entities(rawUpgrade["AddedDesc"].replace("&lt;br&gt;", "\n"))
     intoWeap.baseWeap = baseWeap
     baseWeap.refines.append(r)
     return r
 
+
 def parseRawEvolution(rawEvolution, allSkills):
-    baseWeapKey = rawEvolution['BaseWeapon']
-    intoWeapKey = rawEvolution['EvolvesInto']
+    baseWeapKey = rawEvolution["BaseWeapon"]
+    intoWeapKey = rawEvolution["EvolvesInto"]
     baseWeap = allSkills[baseWeapKey]
     intoWeap = allSkills[intoWeapKey]
     baseWeap.evolutions.append(intoWeap)
 
+
 def parseRawSeal(rawSeal, allSkills):
-    skillName = rawSeal['Skill']
+    skillName = rawSeal["Skill"]
     # unfortunately we have to search the names
     # since wikiName is not stored on page
     found = False
@@ -78,45 +85,48 @@ def parseRawSeal(rawSeal, allSkills):
         if skill.name == skillName:
             skill.isSeal = True
             seal.skill = skill
-            seal.badgeColor = rawSeal['BadgeColor']
-            seal.badgeCost = tryStrToInt(rawSeal['BadgeCost'])
-            seal.greatbadgeCost = tryStrToInt(rawSeal['GreatBadgeCost'])
-            seal.coinCost = tryStrToInt(rawSeal['SacredCoinCost'])
+            seal.badgeColor = rawSeal["BadgeColor"]
+            seal.badgeCost = tryStrToInt(rawSeal["BadgeCost"])
+            seal.greatbadgeCost = tryStrToInt(rawSeal["GreatBadgeCost"])
+            seal.coinCost = tryStrToInt(rawSeal["SacredCoinCost"])
             found = True
     if not found:
         warnings.warn("no seal: " + rawSeal)
         return None
     return seal
 
+
 def parseRawUnit(rawUnit):
     h = Hero()
-    h.name = rawUnit['Name']
-    h.mod = rawUnit['Title'].replace('&quot;', '"')
+    h.name = rawUnit["Name"]
+    h.mod = rawUnit["Title"].replace("&quot;", '"')
     h.full_name = h.name + ":" + h.mod
-    h.wikiName = rawUnit['WikiName']
-    h.page = rawUnit['Page']
-    h.pageID = rawUnit['PageID']
-    h.url = "https://feheroes.gamepedia.com/" + html.unescape(h.page).replace(" ", "_").replace("\"","%22");
+    h.wikiName = rawUnit["WikiName"]
+    h.page = rawUnit["Page"]
+    h.pageID = rawUnit["PageID"]
+    h.url = "https://feheroes.gamepedia.com/" + html.unescape(h.page).replace(
+        " ", "_"
+    ).replace('"', "%22")
     # h.url = "https://feheroes.gamepedia.com/" + urllib.parse.quote(h.page)
-    h.origin = rawUnit['Origin']
-    h.releaseDate = rawUnit['ReleaseDate']
-    h.desc = replace_entities(rawUnit['Description'].replace("&lt;br&gt;", "\n"))
-    h.weapon = rawUnit['WeaponType']
-    h.gender = rawUnit['Gender']
-    h.artist = rawUnit['Artist']
-    h.move = rawUnit['MoveType']
+    h.origin = rawUnit["Origin"]
+    h.releaseDate = rawUnit["ReleaseDate"]
+    h.desc = replace_entities(rawUnit["Description"].replace("&lt;br&gt;", "\n"))
+    h.weapon = rawUnit["WeaponType"]
+    h.gender = rawUnit["Gender"]
+    h.artist = rawUnit["Artist"]
+    h.move = rawUnit["MoveType"]
     h.color = h.weapon.split(" ")[0]
-    properties = re.split("\\s*,\\s*", rawUnit['Properties'])
+    properties = re.split("\\s*,\\s*", rawUnit["Properties"])
     properties = removeEmptyStrings(properties)
     h.properties = properties
     if "refresher" in properties:
         h.isDancer = True
     if "tempest" in properties:
         h.heroSrc = "TT"
-        h.rarities = [4,5]
+        h.rarities = [4, 5]
     elif "ghb" in properties:
         h.heroSrc = "GHB"
-        h.rarities = [3,4]
+        h.rarities = [3, 4]
     elif "duo" in properties:
         h.heroSrc = "Duo"
     elif "legendary" in properties:
@@ -136,28 +146,27 @@ def parseRawUnit(rawUnit):
         h.heroSrc = "Normal"
     return h
 
+
 def parseRawUnitStat(rawUnitStat, allUnits):
     # print(rawUnitStat)
-    heroKey = rawUnitStat['WikiName']
+    heroKey = rawUnitStat["WikiName"]
     # because some elements in the table might be borken
     if not heroKey in allUnits:
         heroKey = heroKey + " ENEMY"
     h = allUnits[heroKey]
-    stats = ['HP', 'Atk', 'Spd', 'Def', 'Res']
+    stats = ["HP", "Atk", "Spd", "Def", "Res"]
     # convert middle stat to bane/neut/boon
-    lvl1BB = lambda x : (x-1,x,x+1)
+    lvl1BB = lambda x: (x - 1, x, x + 1)
     # black magic fuckery, smurt
-    lvl15Stats = [
-        lvl1BB(tryStrToInt(rawUnitStat['Lv1%s5'%(stat)])) for stat in stats
-    ]
+    lvl15Stats = [lvl1BB(tryStrToInt(rawUnitStat["Lv1%s5" % (stat)])) for stat in stats]
     h.lvl_1_Stats[4] = lvl15Stats
-    h.lvl_1_Stats[2] = [lvl1BB(v[1]-1) for v in h.lvl_1_Stats[4]]
-    h.lvl_1_Stats[0] = [lvl1BB(v[1]-2) for v in h.lvl_1_Stats[4]]
+    h.lvl_1_Stats[2] = [lvl1BB(v[1] - 1) for v in h.lvl_1_Stats[4]]
+    h.lvl_1_Stats[0] = [lvl1BB(v[1] - 2) for v in h.lvl_1_Stats[4]]
 
     # to find the biggest nonhp stats
     sd = {}
-    for i in range(1,5):
-        sd[100*lvl15Stats[i][1] - i] = i
+    for i in range(1, 5):
+        sd[100 * lvl15Stats[i][1] - i] = i
     ssd = sorted(sd)
     bigStat1, bigStat2 = sd[ssd.pop()], sd[ssd.pop()]
     # copy the lower array first
@@ -169,10 +178,10 @@ def parseRawUnitStat(rawUnitStat, allUnits):
     h.lvl_1_Stats[3][bigStat1] = lvl1BB(h.lvl_1_Stats[3][bigStat1][1] + 1)
     h.lvl_1_Stats[3][bigStat2] = lvl1BB(h.lvl_1_Stats[3][bigStat2][1] + 1)
 
-    gr3 = [tryStrToInt(rawUnitStat['%sGR3'%(stat)]) for stat in stats]
+    gr3 = [tryStrToInt(rawUnitStat["%sGR3" % (stat)]) for stat in stats]
     # rarity, growth rate
-    rgr3ToGV = lambda r, gr3 : int(0.39 * int(gr3 * (0.79 + 0.07 * r)))
-    for star in range(1,6):
+    rgr3ToGV = lambda r, gr3: int(0.39 * int(gr3 * (0.79 + 0.07 * r)))
+    for star in range(1, 6):
         # calc the growth rates and collect baneboon info as we go
         hasBane = False
         numBanes = 0
@@ -181,15 +190,15 @@ def parseRawUnitStat(rawUnitStat, allUnits):
         totalStat = 0
         for stat in range(5):
             grneut = gr3[stat]
-            neutStat = rgr3ToGV(star,grneut) + h.lvl_1_Stats[star-1][stat][1]
-            baneStat = rgr3ToGV(star,grneut-5) + h.lvl_1_Stats[star-1][stat][0]
-            boonStat = rgr3ToGV(star,grneut+5) + h.lvl_1_Stats[star-1][stat][2]
-            h.lvl_40_Stats[star-1][stat] = (baneStat, neutStat, boonStat)
+            neutStat = rgr3ToGV(star, grneut) + h.lvl_1_Stats[star - 1][stat][1]
+            baneStat = rgr3ToGV(star, grneut - 5) + h.lvl_1_Stats[star - 1][stat][0]
+            boonStat = rgr3ToGV(star, grneut + 5) + h.lvl_1_Stats[star - 1][stat][2]
+            h.lvl_40_Stats[star - 1][stat] = (baneStat, neutStat, boonStat)
             totalStat += neutStat
-            if (neutStat-baneStat) > (boonStat-neutStat):
+            if (neutStat - baneStat) > (boonStat - neutStat):
                 hasBane = True
                 numBanes += 1
-            elif (boonStat-neutStat) > (neutStat-baneStat):
+            elif (boonStat - neutStat) > (neutStat - baneStat):
                 hasBoon = True
                 numBoons += 1
         if hasBane and not (numBoons == 4):
@@ -201,7 +210,7 @@ def parseRawUnitStat(rawUnitStat, allUnits):
         else:
             totalBoon = totalStat
         # finalize the totals
-        h.lvl_40_Stats[star-1][5] = (totalBane, totalStat, totalBoon)
+        h.lvl_40_Stats[star - 1][5] = (totalBane, totalStat, totalBoon)
 
     # fill in the last entry with total bst
     h.statArray = [t[1] for t in h.lvl_40_Stats[4]]
@@ -213,14 +222,15 @@ def parseRawUnitStat(rawUnitStat, allUnits):
 
     return
 
+
 def parseRawUnitSkill(rawUnitSkill, allSkills, allUnits):
-    heroKey = rawUnitSkill['WikiName']
-    skillKey = rawUnitSkill['skill']
+    heroKey = rawUnitSkill["WikiName"]
+    skillKey = rawUnitSkill["skill"]
     # because some elements in the table might be borken
     if not heroKey in allUnits:
         heroKey = heroKey + " ENEMY"
     if not heroKey in allUnits:
-        warnings.warn(rawUnitSkill['WikiName'] + " is not in allUnits yet")
+        warnings.warn(rawUnitSkill["WikiName"] + " is not in allUnits yet")
     if not skillKey in allSkills:
         warnings.warn(skillKey + " is not in allSkills yet")
         return
@@ -229,98 +239,93 @@ def parseRawUnitSkill(rawUnitSkill, allSkills, allUnits):
     sr = SkillReq()
     sr.skill = s
     sr.slot = s.slot
-    sr.defaultRarity = tryStrToInt(rawUnitSkill['defaultRarity'])
-    sr.unlockRarity = tryStrToInt(rawUnitSkill['unlockRarity'])
+    sr.defaultRarity = tryStrToInt(rawUnitSkill["defaultRarity"])
+    sr.unlockRarity = tryStrToInt(rawUnitSkill["unlockRarity"])
     # print(h,sr)
     h.skillReqs.append(sr)
     return
 
 
 def parseRawLeg(rawLegHero, allUnitPages):
-    page = rawLegHero['Page']
+    page = rawLegHero["Page"]
     if not page in allUnitPages:
-        page = page.encode('raw_unicode_escape').decode()
+        page = page.encode("raw_unicode_escape").decode()
         if not page in allUnitPages:
-            warnings.warn(
-                page + " is not in unit pages, and unicode escape failed"
-            )
+            warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
     hero.heroSrc = "Legendary"
-    hero.duel = int(rawLegHero['Duel'])
-    hero.season = rawLegHero['LegendaryEffect']
+    hero.duel = int(rawLegHero["Duel"])
+    hero.season = rawLegHero["LegendaryEffect"]
     return
 
+
 def parseRawDuo(rawDuoHero, allUnitPages):
-    page = rawDuoHero['Page']
+    page = rawDuoHero["Page"]
     if not page in allUnitPages:
-        page = page.encode('raw_unicode_escape').decode()
+        page = page.encode("raw_unicode_escape").decode()
         if not page in allUnitPages:
-            warnings.warn(
-                page + " is not in unit pages, and unicode escape failed"
-            )
+            warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
     hero.heroSrc = "Duo"
-    hero.duoSkill = rawDuoHero['DuoSkill']
-    hero.duel = int(rawDuoHero['Duel'])
+    hero.duoSkill = rawDuoHero["DuoSkill"]
+    hero.duel = int(rawDuoHero["Duel"])
     return
 
+
 def parseRawMythic(rawMythicHero, allUnitPages):
-    page = rawMythicHero['Page']
+    page = rawMythicHero["Page"]
     if not page in allUnitPages:
-        page = page.encode('raw_unicode_escape').decode()
+        page = page.encode("raw_unicode_escape").decode()
         if not page in allUnitPages:
-            warnings.warn(
-                page + " is not in unit pages, and unicode escape failed"
-            )
+            warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
     hero.heroSrc = "Mythic"
-    hero.season = rawMythicHero['MythicEffect']
+    hero.season = rawMythicHero["MythicEffect"]
     return
 
+
 def parseRawHarmonized(rawHarmonizedHero, allUnitPages):
-    page = rawHarmonizedHero['Page']
+    page = rawHarmonizedHero["Page"]
     if not page in allUnitPages:
-        page = page.encode('raw_unicode_escape').decode()
+        page = page.encode("raw_unicode_escape").decode()
         if not page in allUnitPages:
-            warnings.warn(
-                page + " is not in unit pages, and unicode escape failed"
-            )
+            warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
     hero.heroSrc = "Harmonized"
-    hero.harmonizedSkill = rawHarmonizedHero['HarmonizedSkill']
+    hero.harmonizedSkill = rawHarmonizedHero["HarmonizedSkill"]
     return
 
+
 def parseRawFocus(rawFocus, allUnits):
-    heroKey = rawFocus['Unit']
+    heroKey = rawFocus["Unit"]
     if not heroKey in allUnits:
         warnings.warn(heroKey + " not in units")
         return
     hero = allUnits[heroKey]
-    rarity = tryStrToInt(rawFocus['Rarity'])
+    rarity = tryStrToInt(rawFocus["Rarity"])
     if not rarity in hero.rarities:
         hero.rarities.append(rarity)
     return
 
+
 def parseRawAvailability(rawHeroAvail, allUnitPages, timeNow):
     # print(rawHeroAvail)
-    page = rawHeroAvail['Page']
+    page = rawHeroAvail["Page"]
     if not page in allUnitPages:
-        page = page.encode('raw_unicode_escape').decode()
+        page = page.encode("raw_unicode_escape").decode()
         if not page in allUnitPages:
-            warnings.warn(
-                page + " is not in unit pages, and unicode escape failed"
-            )
+            warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
-    rarity = tryStrToInt(rawHeroAvail['Rarity'])
-    startStr = rawHeroAvail['StartTime']
+    rarity = tryStrToInt(rawHeroAvail["Rarity"])
+    startStr = rawHeroAvail["StartTime"]
     startTime = datetime.datetime.strptime(startStr, "%Y-%m-%d %H:%M:%S")
     startTime = pytz.utc.localize(startTime)
-    endStr = rawHeroAvail['EndTime']
+    endStr = rawHeroAvail["EndTime"]
     endTime = datetime.datetime.strptime(endStr, "%Y-%m-%d %H:%M:%S")
     endTime = pytz.utc.localize(endTime)
     avail = Availability()
@@ -332,10 +337,11 @@ def parseRawAvailability(rawHeroAvail, allUnitPages, timeNow):
     if hero.avails == []:
         hero.rarities = []
     hero.avails.append(avail)
-    if (startTime < timeNow and timeNow < endTime):
+    if startTime < timeNow and timeNow < endTime:
         hero.rarities.append(rarity)
     # print(hero, rarity, startTime, "to", endTime)
     return
+
 
 def finalizeUnitSkills(unit):
     # print(unit, unit.skillReqs)
@@ -354,7 +360,7 @@ def finalizeUnitSkills(unit):
                 # evolved weaps can evolve again
                 unit.skillReqs.append(evoSR)
             if sr.unlockRarity == 5:
-                #print(sr)
+                # print(sr)
                 sr.isMax = True
     slots = ["special", "assist", "passivea", "passiveb", "passivec"]
     for slot in slots:
@@ -367,6 +373,7 @@ def finalizeUnitSkills(unit):
             if slotsr.unlockRarity == maxRarity:
                 slotsr.isMax = True
 
+
 def tryStrToInt(intStr):
     if re.match("(-|)[0-9]+", intStr):
         return int(intStr)
@@ -376,17 +383,18 @@ def tryStrToInt(intStr):
         warnings.warn("Bad intStr submitted to tryStrToInt", stacklevel=2)
         return 0
 
-def LoadPoro(pkl_output_file = 'poro.pkl'):
-    with open(pkl_output_file + ".0", 'rb') as f:
+
+def LoadPoro(pkl_output_file="poro.pkl"):
+    with open(pkl_output_file + ".0", "rb") as f:
         up = pickle.Unpickler(f)
         rawSkills = up.load()
         rawUpgrades = up.load()
         rawEvolutions = up.load()
         rawUnitStats = up.load()
-    with open(pkl_output_file + ".1", 'rb') as f:
+    with open(pkl_output_file + ".1", "rb") as f:
         up = pickle.Unpickler(f)
         rawUnitSkills = up.load()
-    with open(pkl_output_file + ".2", 'rb') as f:
+    with open(pkl_output_file + ".2", "rb") as f:
         up = pickle.Unpickler(f)
         rawUnits = up.load()
         rawSeals = up.load()
@@ -429,7 +437,7 @@ def LoadPoro(pkl_output_file = 'poro.pkl'):
         if seal != None:
             allSeals[skillkey] = seal
 
-    #isMax for seals
+    # isMax for seals
     sealReqs = set()
     for skillkey in allSeals:
         seal = allSeals[skillkey]
@@ -523,10 +531,12 @@ def LoadPoro(pkl_output_file = 'poro.pkl'):
     return dict(
         skills=list(allSkills.values()),
         heroes=list(allUnits.values()),
-        seals =list(allSeals.values()))
+        seals=list(allSeals.values()),
+    )
+
 
 # to test image curling
-def saveDB(pkl_output_file = 'porodb.pkl'):
-    with open(pkl_output_file, 'wb') as f:
+def saveDB(pkl_output_file="porodb.pkl"):
+    with open(pkl_output_file, "wb") as f:
         p = pickle.Pickler(f)
         p.dump(LoadPoro())
