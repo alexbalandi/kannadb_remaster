@@ -11,20 +11,14 @@ class AVAILABILITY(object):
     STANDARD = "A_STANDARD"
     # Not in standard pool and not any of the other categories
     SPECIAL = "A_SPECIAL"
-    # GHB hero
     GHB = "A_GHB"
-    # TT hero
     TT = "A_TT"
-    # Legendary hero
     LEGENDARY = "A_LEGENDARY"
-    # Mythic hero
     MYTHIC = "A_MYTHIC"
-    # Story
     STORY = "A_STORY"
-    # Duo
     DUO = "A_DUO"
-    # Harmonized
     HARMONIZED = "A_HARMONIZED"
+    ASCENDANT = "A_ASCENDANT"
 
 
 AVAILABILITY_PAIRS = (
@@ -63,6 +57,10 @@ AVAILABILITY_PAIRS = (
     (
         AVAILABILITY.HARMONIZED,
         "Harmonized",
+    ),
+    (
+        AVAILABILITY.ASCENDANT,
+        "Ascendant",
     ),
 )
 
