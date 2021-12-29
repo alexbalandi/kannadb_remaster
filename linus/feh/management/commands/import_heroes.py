@@ -244,6 +244,10 @@ class Command(BaseCommand):
             if skilltype == "seal":
                 skill_slot = WEAPON_TYPE.SACRED_SEAL
             elif skill.slot != "weapon":
+                # Note: ignoring stuff like captain skills
+                # TODO: potentially revisit this
+                if not skill.slot in SLOT_MAP:
+                    continue
                 skill_slot = SLOT_MAP[skill.slot]
                 # mt = None
                 # srange = None
