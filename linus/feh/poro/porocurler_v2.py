@@ -267,7 +267,6 @@ def getSummoningAvailability():
         '_rowID=ID',
         '_pageName=Page',
         'Rarity',
-        'NewHeroes',
         'StartTime',
         'EndTime'
     ]
