@@ -19,24 +19,56 @@ def readURLSoup(url, parser):
 
 def tryStrToInt(intStr):
     if not intStr:
-        warnings.warn("NoneType submitted to tryStrToInt", stacklevel=2)       
+        warnings.warn("NoneType submitted to tryStrToInt", stacklevel=2)
         return 0
     if intStr.isnumeric():
         return int(intStr)
     else:
         return 0
 
+# https://feheroes.gamepedia.com/wiki/Special:CargoQuery
+# TODO: Don't need to repeatedly verify by fetching all tablenames
+def verifyTableFields(table, tableFields):
+    cargoquery = 'https://feheroes.gamepedia.com/api.php?'
+    # action=cargoqueryautocomplete&format=xml
+    cargoFields = {
+        'action'    :   'cargoqueryautocomplete',
+        'format'    :   'xml'
+    }
+    cargoquery1 = cargoquery + urllib.parse.urlencode(cargoFields)
+    # print(cargoquery1)
+    curlXML = readURLSoup(cargoquery1, 'lxml-xml')
+    allEntries = curlXML.api.cargoqueryautocomplete.contents
+    tableNames = [e.attrs["main_table"] for e in allEntries]
+    if not table in tableNames:
+        raise ValueError(table, "not in", tableNames)
+    # action=cargoqueryautocomplete&format=xml&tables=SummoningAvailability
+    cargoFields["tables"] = table
+    cargoquery2 = cargoquery + urllib.parse.urlencode(cargoFields)
+    # print(cargoquery2)
+    curlXML = readURLSoup(cargoquery2, 'lxml-xml')
+    allEntries = curlXML.api.cargoqueryautocomplete.contents
+    fieldNames = [e.contents[0] for e in allEntries]
+    for f in tableFields:
+        f = f.split("=")[0]
+        if f == "_rowID":
+            continue
+        fullName = table + "." + f
+        if not fullName in fieldNames:
+            raise ValueError(fullName, "not in", fieldNames)
+
 # :eggplant:
 def getRawDictFromTable(table, tableFields, baseFieldName):
+    verifyTableFields(table, tableFields)
     results = {}
     aliasedTableFields = [f.rsplit("=")[-1] for f in tableFields]
     if not baseFieldName in aliasedTableFields:
-        raise ValueError(baseFieldName, "not in", tableFields) 
+        raise ValueError(baseFieldName, "not in", tableFields)
     cargoquery = 'https://feheroes.gamepedia.com/api.php?'
     cargoFields = {
         'action'    :   'cargoquery',
-        'format'    :   'xml', 
-        'tables'    :   table, 
+        'format'    :   'xml',
+        'tables'    :   table,
         'fields'    :   ",".join(tableFields),
         'limit'     :   500, # max the API gives us
         'offset'    :   0    # increase this by 500 per curl
@@ -45,7 +77,7 @@ def getRawDictFromTable(table, tableFields, baseFieldName):
         cargoquery += urllib.parse.urlencode(cargoFields)
         # print(cargoquery)
         curlXML = readURLSoup(cargoquery, 'lxml-xml')
-        
+
         if curlXML.api.cargoquery == None:
             raise ValueError(curlXML)
         allEntries = curlXML.api.cargoquery.contents
@@ -64,19 +96,19 @@ def getRawDictFromTable(table, tableFields, baseFieldName):
 
 # because leenis likes double dicting :eggplant: :eggplant:
 def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldName):
-
+    verifyTableFields(table, tableFields)
     results = {}
     aliasedTableFields = [f.rsplit("=")[-1] for f in tableFields]
     if not baseFieldName in aliasedTableFields:
-        raise ValueError(baseFieldName, "not in", tableFields) 
+        raise ValueError(baseFieldName, "not in", tableFields)
     if not secondaryFieldName in aliasedTableFields:
-        raise ValueError(secondaryFieldName, "not in", tableFields)     
+        raise ValueError(secondaryFieldName, "not in", tableFields)
 
     cargoquery = 'https://feheroes.gamepedia.com/api.php?'
     cargoFields = {
         'action'    :   'cargoquery',
-        'format'    :   'xml', 
-        'tables'    :   table, 
+        'format'    :   'xml',
+        'tables'    :   table,
         'fields'    :   ",".join(tableFields),
         'limit'     :   500, # max the API gives us
         'offset'    :   0    # increase this by 500 per curl
@@ -84,7 +116,7 @@ def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldN
     while True:
         cargoquery += urllib.parse.urlencode(cargoFields)
         curlXML = readURLSoup(cargoquery, 'lxml-xml')
-        
+
         if curlXML.api.cargoquery == None:
             raise ValueError(curlXML)
         allEntries = curlXML.api.cargoquery.contents
@@ -98,7 +130,7 @@ def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldN
             if entryName in results:
                 results[entryName][secondaryName] = entryDict
             else:
-                results[entryName] = {secondaryName: entryDict}                
+                results[entryName] = {secondaryName: entryDict}
         cargoFields['offset'] += 500
     return results
 
@@ -107,17 +139,17 @@ def getRawSkills():
         '_pageName=Page',
         'GroupName',
         'Name',
-        'WikiName',         
-        'Scategory',        
+        'WikiName',
+        'Scategory',
         'RefinePath',       # atk/def/res/spd/skill##
-        'UseRange', 
-        'Description', 
+        'UseRange',
+        'Description',
         'Required',         # WikiName Skill
         'Next',             # WikiName Skill
         'Exclusive',
-        'SP', 
-        'CanUseMove', 
-        'CanUseWeapon', 
+        'SP',
+        'CanUseMove',
+        'CanUseWeapon',
         'Might',
         'StatModifiers',
         'Cooldown',
@@ -135,7 +167,7 @@ def getRawWeaponUpgrades():
         'StatModifiers',    # 5,2,0,0,0
         'BaseDesc',
         'AddedDesc'
-    ]    
+    ]
     return getRawDictFromTable('WeaponUpgrades', upgradeFields, 'UpgradesInto')
 
 def getRawEvolutions():
@@ -293,7 +325,7 @@ def CurlAll(phase, pkl_output_file = 'poro.pkl'):
     assert phase in range(PHASES)
     pkl_output_file = "%s.%d"%(pkl_output_file, phase)
     # curl first think later, smurt
-    if (phase == 0):  
+    if (phase == 0):
         rawSkills = getRawSkills()
         rawUpgrades = getRawWeaponUpgrades()
         rawEvolutions = getRawEvolutions()
