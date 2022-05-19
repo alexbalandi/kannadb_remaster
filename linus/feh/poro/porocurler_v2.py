@@ -3,15 +3,16 @@ import pickle
 import urllib.parse
 import urllib.request
 import warnings
+import certifi
+import ssl
+import pycurl
 
 from bs4 import BeautifulSoup
 
-import pycurl
-
-
 # not stored to file
 def readURL(url):
-    url = urllib.request.urlopen(url)
+    ssl_context = ssl.create_default_context(cafile = certifi.where())
+    url = urllib.request.urlopen(url, context=ssl_context)
     return url.read()
 def readURLSoup(url, parser):
     return BeautifulSoup(readURL(url), parser)
