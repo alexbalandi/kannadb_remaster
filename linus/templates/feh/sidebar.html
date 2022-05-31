@@ -1,30 +1,38 @@
 {% load staticfiles %}
 
-{% for filter in filters %}
-  <span class='text-center'>
-    {% if filter.title %}
-      <div class='text-center'>{{ filter.title }}</div>
-    {% endif %}
+<div class="filters">
+  {% for filter in filters %}
+    <span class='filter-section'>
+      {% if filter.title %}
+        <div class='filter-title'>
+          {{ filter.title }}
+        </div>
+      {% endif %}
 
-    <div class='{{ filter.btn_class }}'>
-      {% for content in filter.content %}
-        <button type="button" class="btn btn-default {{ filter.id }}-btn btn-sm" data-id="{{ content.0 }}"
-          {% if content.1.2 %}
-            data-tippy-content="{{ content.1.2 }}"
-          {% endif %}
-        >
-          {% if content.1.0 == 'txt' %}
-            {{ content.1.1 }}
-          {% elif content.1.0 == 'img' %}
-            <img height="30pt" src="{{ content.1.1 }}">
-          {% endif %}
-        </button>
-      {% endfor %}
-    </div>
-  </span>
-{% endfor %}
+      <div class='filter-buttons {{ filter.btn_class }}'>
+        {% for content in filter.content %}
+          <button type="button" class="{{ filter.id }}-btn filter-button" data-id="{{ content.0 }}"
+            {% if content.1.2 %}
+              data-tippy-content="{{ content.1.2 }}"
+            {% endif %}
+          >
+            {% if content.1.0 == 'txt' %}
+              {{ content.1.1 }}
+            {% elif content.1.0 == 'img' %}
+              <img height="30pt" src="{{ content.1.1 }}">
+            {% endif %}
+          </button>
+        {% endfor %}
+      </div>
+    </span>
+  {% endfor %}
+</div>
 
-<div class='card card-body bg-dark'>
+<div class='sliders'>
+  <div class='filter-title'>
+    Stat
+  </div>
+
 {% for stat in stats %}
   <p>
     {{ stat.title }}: <span id="stat-range-slider-display-{{ stat.title }}"></span>
@@ -38,3 +46,7 @@
   </p>
 {% endfor %}
 </div>
+
+<small>Data from <a href="https://feheroes.gamepedia.com">Gamepedia</a>.
+Thank you maintainers!</small>
+

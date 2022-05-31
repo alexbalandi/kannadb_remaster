@@ -64,7 +64,7 @@ def get_stat_filter(heroes: List[Hero]) -> Filter:
         id="statdisplay",
         content=max_stats,
         btn_class="btn-stat-cycle",
-        title=None,
+        title="Stat Display",
     )
 
 

@@ -48,39 +48,9 @@ def readURL(url):
     url = urllib.request.urlopen(url)
     return url.read()
 
-def buildIconpathPkl(pkl_icon_file = 'iconpaths.pkl'):
-    # should first see how many heroes then loop this to
-    # build the hero list by len/500 but fuck that
-    # stuff gonna change before theres 1000 heroes :)
-    iconFields = {
-        'action'    :   'query',
-        'format'    :   'json',
-        'list'      :   'categorymembers',
-        'cmtitle'   :   'Category:Icon Portrait files',
-        'cmlimit'   :   500
-    }
-    cargoquery = apiquery + urllib.parse.urlencode(iconFields)
-    # unfortunately urlencode doesnt seem to allow blank fields
-    cargoquery += "&cmcontinue"
-    curlJSON = json.loads(readURL(cargoquery))
-    cmcontinue = curlJSON["continue"]["cmcontinue"]
-    categorymembers = curlJSON["query"]["categorymembers"]
-    iconFields["cmcontinue"] = cmcontinue
-    cargoquery = apiquery + urllib.parse.urlencode(iconFields)
-    curlJSON = json.loads(readURL(cargoquery))
-    categorymembers += curlJSON["query"]["categorymembers"]
-    iconpaths = [cm["title"] for cm in categorymembers]
-    with open(pkl_icon_file, 'wb') as f:
-        p = pickle.Pickler(f)
-        p.dump(iconpaths)
-
 def BuildHeroPaths(
     pkl_output_file = 'porodb.pkl',
-    pkl_icon_file = 'iconpaths.pkl',
     pkl_paths_file = 'heropaths.pkl'):
-
-    buildIconpathPkl(pkl_icon_file)
-    iconpaths = getIconPaths(pkl_icon_file)
 
     data = LoadPoro(pkl_output_file)
     skills = data["skills"]
@@ -89,11 +59,6 @@ def BuildHeroPaths(
     heropaths = {}
     for h in heroes:
         mfname = getHeroMFname(h)
-        if mfname in iconpaths:
-            heroIconURL = getIconURL(mfname)
-            h.iconURL = heroIconURL
-            heropaths[mfname] = heroIconURL
-            # print(h, h.iconURL)
     with open(pkl_paths_file, 'wb') as f:
         p = pickle.Pickler(f)
         p.dump(heropaths)
@@ -111,15 +76,12 @@ def getHeroPaths(pkl_paths_file = 'heropaths.pkl'):
 
 def GetKannaURLs(
     pkl_output_file = 'porodb.pkl',
-    pkl_icon_file = 'iconpaths.pkl',
     pkl_paths_file = 'heropaths.pkl'):
     if not os.path.isfile(pkl_paths_file):
         return BuildHeroPaths(
             pkl_output_file,
-            pkl_icon_file,
             pkl_paths_file
             )
-    buildIconpathPkl(pkl_icon_file)
     data = LoadPoro(pkl_output_file)
     return data
 

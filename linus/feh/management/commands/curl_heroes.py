@@ -17,17 +17,6 @@ def GetPklOutputFile():
     return os.path.join(output_file_root, filename)
 
 
-def GetPklIconFile():
-    output_file_root = os.path.join(settings.MEDIA_ROOT, "poro")
-
-    if not os.path.isdir(output_file_root):
-        os.mkdir(output_file_root)
-
-    filename = "poroicon.pkl"
-
-    return os.path.join(output_file_root, filename)
-
-
 def GetPklHeroURLFile():
     output_file_root = os.path.join(settings.MEDIA_ROOT, "poro")
 

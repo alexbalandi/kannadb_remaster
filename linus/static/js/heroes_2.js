@@ -260,10 +260,6 @@ $(document).ready(function () {
   $('button.statdisplay-btn[data-id="normal"]').show();
   $('button.statdisplay-btn[data-id="normal"]').addClass('active');
 
-  $("#sidebar").mCustomScrollbar({
-    theme: "minimal"
-  });
-
   $('#sidebarCollapse').on('click', function () {
     $('#sidebar, #content').toggleClass('active');
     $('.collapse.in').toggleClass('in');

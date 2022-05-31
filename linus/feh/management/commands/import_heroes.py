@@ -6,7 +6,6 @@ from django.core.management.base import BaseCommand
 
 from linus.feh.management.commands.curl_heroes import (
     GetPklHeroURLFile,
-    GetPklIconFile,
     GetPklOutputFile,
 )
 from linus.feh.models import (
@@ -126,9 +125,8 @@ class Command(BaseCommand):
     help = "Import Heroes from porocode."
 
     def handle(self, *args, **options):
-        # TODO: leenis decide on two filepaths for icon and herourl
         all_data = GetKannaURLs(
-            GetPklOutputFile(), GetPklIconFile(), GetPklHeroURLFile()
+            GetPklOutputFile(), GetPklHeroURLFile()
         )
 
         heroes = all_data["heroes"]
@@ -246,7 +244,7 @@ class Command(BaseCommand):
             elif skill.slot != "weapon":
                 # Note: ignoring stuff like captain skills
                 # TODO: potentially revisit this
-                if not skill.slot in SLOT_MAP:
+                if skill.slot not in SLOT_MAP:
                     continue
                 skill_slot = SLOT_MAP[skill.slot]
                 # mt = None
