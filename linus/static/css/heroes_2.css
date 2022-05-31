@@ -95,7 +95,7 @@ tr.shown td.details-control:not(.detail-header) {
 }
 
 #sidebar.active {
-  margin-left: -230px;
+  margin-left: calc(var(--sidebar-width) * -1);
 }
 
 .sidebar-header {
@@ -210,7 +210,7 @@ tr.shown td.details-control:not(.detail-header) {
 
 @media (max-width: 768px) {
   #sidebar {
-    margin-left: -220px;
+    margin-left: calc(var(--sidebar-width) * -1);
   }
   #sidebar.active {
     margin-left: 0;
@@ -219,6 +219,6 @@ tr.shown td.details-control:not(.detail-header) {
     width: 100%;
   }
   #content.active {
-    width: calc(100% - 220px);
+    width: calc(100% - var(--sidebar-width));
   }
 }
