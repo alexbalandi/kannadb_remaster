@@ -82,7 +82,7 @@ tr.shown td.details-control:not(.detail-header) {
 
 #sidebar {
   width: var(--sidebar-width);
-  height: 100vh;
+  height: calc(100vh - var(--header-height));
   padding: 5px;
   position: fixed;
   overflow-y: auto;
