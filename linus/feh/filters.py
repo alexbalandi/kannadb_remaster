@@ -267,9 +267,9 @@ def get_movement_permission_filter(skills: List[Skill]) -> Filter:
         for movement_type in movement_types
     ]
 
-    Filter(
+    return Filter(
         id="movement_permissions",
         content=movement_types,
         btn_class="btn-choose-any",
         title=None,
-    ),
+    )
