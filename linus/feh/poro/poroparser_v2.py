@@ -9,10 +9,8 @@ import pytz
 from w3lib.html import replace_entities
 from .poroclasses import Skill, Refine, Seal, Hero, SkillReq, Availability
 
-
 def removeEmptyStrings(arr):
     return [a for a in arr if not a == ""]
-
 
 def parseRawSkill(rawSkill):
     s = Skill()
@@ -27,11 +25,9 @@ def parseRawSkill(rawSkill):
         s.cost = tryStrToInt(rawSkill["SP"])
     if "UseRange" in rawSkill:
         s.range = tryStrToInt(rawSkill["UseRange"])
-
     if "Description" in rawSkill:
         # TODO: prettify it later
         s.desc = replace_entities(rawSkill["Description"].replace("&lt;br&gt;", "\n"))
-
     if "Scategory" in rawSkill:
         s.slot = rawSkill["Scategory"]
     if s.slot == "sacredseal":
@@ -63,7 +59,6 @@ def parseRawSkill(rawSkill):
         s.stats = rawSkill["StatModifiers"]
     return s
 
-
 def parseRawUpgrade(rawUpgrade, allSkills):
     baseWeapKey = rawUpgrade["BaseWeapon"]
     intoWeapKey = rawUpgrade["UpgradesInto"]
@@ -81,14 +76,12 @@ def parseRawUpgrade(rawUpgrade, allSkills):
     baseWeap.refines.append(r)
     return r
 
-
 def parseRawEvolution(rawEvolution, allSkills):
     baseWeapKey = rawEvolution["BaseWeapon"]
     intoWeapKey = rawEvolution["EvolvesInto"]
     baseWeap = allSkills[baseWeapKey]
     intoWeap = allSkills[intoWeapKey]
     baseWeap.evolutions.append(intoWeap)
-
 
 def parseRawSeal(rawSeal, allSkills):
     skillName = rawSeal["Skill"]
@@ -115,7 +108,6 @@ def parseRawSeal(rawSeal, allSkills):
         warnings.warn("no seal: " + rawSeal)
         return None
     return seal
-
 
 def parseRawUnit(rawUnit):
     h = Hero()
@@ -172,8 +164,6 @@ def parseRawUnit(rawUnit):
     else:
         h.heroSrc = "Normal"
     return h
-
-
 
 def parseRawUnitStat(rawUnitStat, allUnits):
     # print(rawUnitStat)
@@ -250,7 +240,6 @@ def parseRawUnitStat(rawUnitStat, allUnits):
 
     return
 
-
 def parseRawUnitSkill(rawUnitSkill, allSkills, allUnits):
     heroKey = rawUnitSkill["WikiName"]
     skillKey = rawUnitSkill["skill"]
@@ -275,7 +264,6 @@ def parseRawUnitSkill(rawUnitSkill, allSkills, allUnits):
     h.skillReqs.append(sr)
     return
 
-
 def parseRawLeg(rawLegHero, allUnitPages):
     page = rawLegHero["Page"]
     if not page in allUnitPages:
@@ -288,7 +276,6 @@ def parseRawLeg(rawLegHero, allUnitPages):
     hero.duel = int(rawLegHero["Duel"])
     hero.season = rawLegHero["LegendaryEffect"]
     return
-
 
 def parseRawDuo(rawDuoHero, allUnitPages):
     page = rawDuoHero["Page"]
@@ -316,7 +303,6 @@ def parseRawMythic(rawMythicHero, allUnitPages):
     hero.season = rawMythicHero["MythicEffect"]
     return
 
-
 def parseRawHarmonized(rawHarmonizedHero, allUnitPages):
     page = rawHarmonizedHero["Page"]
     if not page in allUnitPages:
@@ -329,7 +315,6 @@ def parseRawHarmonized(rawHarmonizedHero, allUnitPages):
     hero.harmonizedSkill = rawHarmonizedHero["HarmonizedSkill"]
     return
 
-
 def parseRawFocus(rawFocus, allUnits):
     heroKey = rawFocus["Unit"]
     if not heroKey in allUnits:
@@ -340,7 +325,6 @@ def parseRawFocus(rawFocus, allUnits):
     if not rarity in hero.rarities:
         hero.rarities.append(rarity)
     return
-
 
 def parseRawAvailability(rawHeroAvail, allUnitPages, timeNow):
     # print(rawHeroAvail)
@@ -372,7 +356,6 @@ def parseRawAvailability(rawHeroAvail, allUnitPages, timeNow):
     # print(hero, rarity, startTime, "to", endTime)
     return
 
-
 def finalizeUnitSkills(unit):
     # print(unit, unit.skillReqs)
     for sr in unit.skillReqs:
@@ -403,7 +386,6 @@ def finalizeUnitSkills(unit):
             if slotsr.unlockRarity == maxRarity:
                 slotsr.isMax = True
 
-
 def tryStrToInt(intStr):
     if re.match("(-|)[0-9]+", intStr):
         return int(intStr)
@@ -412,7 +394,6 @@ def tryStrToInt(intStr):
     else:
         warnings.warn("Bad intStr submitted to tryStrToInt", stacklevel=2)
         return 0
-
 
 def LoadPoro(pkl_output_file="poro.pkl"):
     with open(pkl_output_file + ".0", "rb") as f:
@@ -563,7 +544,6 @@ def LoadPoro(pkl_output_file="poro.pkl"):
         heroes=list(allUnits.values()),
         seals=list(allSeals.values()),
     )
-
 
 # to test image curling
 def saveDB(pkl_output_file="porodb.pkl"):
