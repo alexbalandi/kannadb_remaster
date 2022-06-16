@@ -75,9 +75,9 @@ def getRawDictFromTable(table, tableFields, baseFieldName):
         'offset'    :   0    # increase this by 500 per curl
     }
     while True:
-        cargoquery += urllib.parse.urlencode(cargoFields)
-        # print(cargoquery)
-        curlXML = readURLSoup(cargoquery, 'lxml-xml')
+        cargoqueryRun = cargoquery + urllib.parse.urlencode(cargoFields)
+        # print(cargoqueryRun)
+        curlXML = readURLSoup(cargoqueryRun, 'lxml-xml')
 
         if curlXML.api.cargoquery == None:
             raise ValueError(curlXML)
@@ -115,8 +115,9 @@ def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldN
         'offset'    :   0    # increase this by 500 per curl
     }
     while True:
-        cargoquery += urllib.parse.urlencode(cargoFields)
-        curlXML = readURLSoup(cargoquery, 'lxml-xml')
+        cargoqueryRun = cargoquery + urllib.parse.urlencode(cargoFields)
+        # print(cargoqueryRun)
+        curlXML = readURLSoup(cargoqueryRun, 'lxml-xml')
 
         if curlXML.api.cargoquery == None:
             raise ValueError(curlXML)
