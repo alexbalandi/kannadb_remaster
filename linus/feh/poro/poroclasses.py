@@ -24,12 +24,13 @@ class Skill(object):
         # Red|Blue|Green|Colorless 
         # Sword|Lance|Axe|Bow|Dagger|Tome|Staff|Breath|Beast
         self.weaponPerms = []       # equippable weapypes
-
+        self.properties = []
+        self.isEnemyOnly = False
         self.refines = []           # for weaps
         self.evolutions = []        # for weaps
-        self.stats = ""             # HP/A/S/D/R
+        self.stats = "0,0,0,0,0"    # HP/A/S/D/R
         self.baseWeap = []          # for refines only
-        self.properties = []        # just in case
+
 
     def __str__(self):
         if (self.isRefine):
@@ -54,9 +55,9 @@ class Seal(object):
     def __init__(self):
         self.skill = None           # the underlying skill
         self.badgeColor = ""        
-        self.badgeCost = ""     
-        self.greatbadgeCost = ""
-        self.coinCost = ""
+        self.badgeCost = 0     
+        self.greatbadgeCost = 0
+        self.coinCost = 0
         self.isMax = False          # as far as seals are concerned
     def __str__(self):
         return "Seal(%s)"%str(self.skill)
@@ -103,6 +104,7 @@ class Hero(object):
         self.harmonizedSkill = ""
         self.rarities = []
         self.avails = []
+        self.properties = []
         self.isDancer = False 
 
 
