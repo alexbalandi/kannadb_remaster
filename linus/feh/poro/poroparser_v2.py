@@ -18,35 +18,49 @@ def parseRawSkill(rawSkill):
     s = Skill()
     s.name = rawSkill["Name"]
     s.wikiName = rawSkill["WikiName"]
-    s.isRefine = not "" == rawSkill["RefinePath"]
-    s.refineType = rawSkill["RefinePath"]
-    s.isPrf = "1" == rawSkill["Exclusive"] and not s.isRefine
-    s.cost = tryStrToInt(rawSkill["SP"])
-    s.range = tryStrToInt(rawSkill["UseRange"])
-    # TODO: prettify it later
-    s.desc = replace_entities(rawSkill["Description"].replace("&lt;br&gt;", "\n"))
-    s.slot = rawSkill["Scategory"]
+    if "RefinePath" in rawSkill:
+        s.isRefine = not '' == rawSkill["RefinePath"]
+        s.refineType = rawSkill["RefinePath"]
+    if "Exclusive" in rawSkill:
+        s.isPrf = "1" == rawSkill["Exclusive"] and not s.isRefine
+    if "SP" in rawSkill:
+        s.cost = tryStrToInt(rawSkill["SP"])
+    if "UseRange" in rawSkill:
+        s.range = tryStrToInt(rawSkill["UseRange"])
+
+    if "Description" in rawSkill:
+        # TODO: prettify it later
+        s.desc = replace_entities(rawSkill["Description"].replace("&lt;br&gt;", "\n"))
+
+    if "Scategory" in rawSkill:
+        s.slot = rawSkill["Scategory"]
     if s.slot == "sacredseal":
         s.isSeal = True
-    s.cd = tryStrToInt(rawSkill["Cooldown"])
+    if "Cooldown" in rawSkill:
+        s.cd = tryStrToInt(rawSkill["Cooldown"])
+
     s.page = rawSkill["Page"]
-    s.url = "https://feheroes.gamepedia.com/" + html.unescape(s.page).replace(
-        " ", "_"
-    ).replace('"', "%22")
-    # s.url = "https://feheroes.gamepedia.com/" + urllib.parse.quote(s.page)
+    s.url = "https://feheroes.gamepedia.com/" + html.unescape(s.page).replace(" ", "_").replace("\"","%22");
+
     # split because Aether <= Sol,Luna
-    s.required = re.split("\\s*,\\s*", rawSkill["Required"])
-    s.required = removeEmptyStrings(s.required)
-    s.next = re.split("\\s*,\\s*", rawSkill["Next"])
-    s.next = removeEmptyStrings(s.next)
-    s.movePerms = re.split("\\s*,\\s*", rawSkill["CanUseMove"])
-    s.movePerms = removeEmptyStrings(s.movePerms)
-    s.weaponPerms = re.split("\\s*,\\s*", rawSkill["CanUseWeapon"])
-    s.weaponPerms = removeEmptyStrings(s.weaponPerms)
-    s.properties = re.split("\\s*,\\s*", rawSkill["Properties"])
-    s.properties = removeEmptyStrings(s.properties)
-    s.isEnemyOnly = "enemy_only" in s.properties
-    s.stats = rawSkill["StatModifiers"]
+    if "Required" in rawSkill:
+        s.required = re.split("\\s*,\\s*", rawSkill["Required"])
+        s.required = removeEmptyStrings(s.required)
+    if "Next" in rawSkill:
+        s.next = re.split("\\s*,\\s*", rawSkill["Next"])
+        s.next = removeEmptyStrings(s.next)
+    if "CanUseMove" in rawSkill:
+        s.movePerms = re.split("\\s*,\\s*", rawSkill["CanUseMove"])
+        s.movePerms = removeEmptyStrings(s.movePerms)
+    if "CanUseWeapon" in rawSkill:
+        s.weaponPerms = re.split("\\s*,\\s*", rawSkill["CanUseWeapon"])
+        s.weaponPerms = removeEmptyStrings(s.weaponPerms)
+    if "Properties" in rawSkill:
+        s.properties = re.split("\\s*,\\s*", rawSkill["Properties"])
+        s.properties = removeEmptyStrings(s.properties)
+        s.isEnemyOnly = "enemy_only" in s.properties
+    if "StatModifiers" in rawSkill:
+        s.stats = rawSkill["StatModifiers"]
     return s
 
 
@@ -59,7 +73,10 @@ def parseRawUpgrade(rawUpgrade, allSkills):
     r.skill = intoWeap
     r.refineType = intoWeap.refineType
     r.statChange = rawUpgrade["StatModifiers"]
-    r.desc = replace_entities(rawUpgrade["AddedDesc"].replace("&lt;br&gt;", "\n"))
+    if "AddedDesc" in rawUpgrade:
+        r.desc = replace_entities(rawUpgrade["AddedDesc"].replace("&lt;br&gt;", "\n"))
+    else:
+        r.desc = ""
     intoWeap.baseWeap = baseWeap
     baseWeap.refines.append(r)
     return r
@@ -85,10 +102,14 @@ def parseRawSeal(rawSeal, allSkills):
         if skill.name == skillName:
             skill.isSeal = True
             seal.skill = skill
-            seal.badgeColor = rawSeal["BadgeColor"]
-            seal.badgeCost = tryStrToInt(rawSeal["BadgeCost"])
-            seal.greatbadgeCost = tryStrToInt(rawSeal["GreatBadgeCost"])
-            seal.coinCost = tryStrToInt(rawSeal["SacredCoinCost"])
+            if "BadgeColor" in rawSeal:
+                seal.badgeColor = rawSeal["BadgeColor"]
+            if "BadgeCost" in rawSeal:
+                seal.badgeCost = tryStrToInt(rawSeal["BadgeCost"])
+            if "GreatBadgeCost" in rawSeal:
+                seal.greatbadgeCost = tryStrToInt(rawSeal["GreatBadgeCost"])
+            if "SacredCoinCost" in rawSeal:
+                seal.coinCost = tryStrToInt(rawSeal["SacredCoinCost"])
             found = True
     if not found:
         warnings.warn("no seal: " + rawSeal)
@@ -99,34 +120,42 @@ def parseRawSeal(rawSeal, allSkills):
 def parseRawUnit(rawUnit):
     h = Hero()
     h.name = rawUnit["Name"]
-    h.mod = rawUnit["Title"].replace("&quot;", '"')
+    if "Title" in rawUnit:
+        h.mod = rawUnit["Title"].replace('&quot;', '"')
     h.full_name = h.name + ":" + h.mod
     h.wikiName = rawUnit["WikiName"]
     h.page = rawUnit["Page"]
     h.pageID = rawUnit["PageID"]
-    h.url = "https://feheroes.gamepedia.com/" + html.unescape(h.page).replace(
-        " ", "_"
-    ).replace('"', "%22")
-    # h.url = "https://feheroes.gamepedia.com/" + urllib.parse.quote(h.page)
-    h.origin = rawUnit["Origin"]
-    h.releaseDate = rawUnit["ReleaseDate"]
-    h.desc = replace_entities(rawUnit["Description"].replace("&lt;br&gt;", "\n"))
-    h.weapon = rawUnit["WeaponType"]
-    h.gender = rawUnit["Gender"]
-    h.artist = rawUnit["Artist"]
-    h.move = rawUnit["MoveType"]
-    h.color = h.weapon.split(" ")[0]
-    properties = re.split("\\s*,\\s*", rawUnit["Properties"])
-    properties = removeEmptyStrings(properties)
-    h.properties = properties
+    h.url = "https://feheroes.gamepedia.com/" + html.unescape(h.page).replace(" ", "_").replace("\"","%22");
+    if "Origin" in rawUnit:
+        h.origin = rawUnit["Origin"]
+    if "ReleaseDate" in rawUnit:
+        h.releaseDate = rawUnit["ReleaseDate"]
+    if "Description" in rawUnit:
+        h.desc = replace_entities(rawUnit["Description"].replace("&lt;br&gt;", "\n"))
+    if "WeaponType" in rawUnit:
+        h.weapon = rawUnit["WeaponType"]
+        h.color = h.weapon.split(" ")[0]
+    if "Gender" in rawUnit:
+        h.gender = rawUnit["Gender"]
+    if "Artist" in rawUnit:
+        h.artist = rawUnit["Artist"]
+    if "MoveType" in rawUnit:
+        h.move = rawUnit["MoveType"]
+    if "Properties" in rawUnit:
+        properties = re.split("\\s*,\\s*", rawUnit["Properties"])
+        properties = removeEmptyStrings(properties)
+        h.properties = properties
+    else:
+        properties = []
     if "refresher" in properties:
         h.isDancer = True
     if "tempest" in properties:
         h.heroSrc = "TT"
-        h.rarities = [4, 5]
+        h.rarities = [4,5]
     elif "ghb" in properties:
         h.heroSrc = "GHB"
-        h.rarities = [3, 4]
+        h.rarities = [3,4]
     elif "duo" in properties:
         h.heroSrc = "Duo"
     elif "legendary" in properties:
@@ -135,8 +164,6 @@ def parseRawUnit(rawUnit):
         h.heroSrc = "Mythic"
     elif "story" in properties:
         h.heroSrc = "Story"
-    elif "ascended" in properties:
-        h.heroSrc = "Ascended"
     # will get overwritten by duo/leg/mythic
     # if for some reason theres an inconsistency
     # in the properties
@@ -145,6 +172,7 @@ def parseRawUnit(rawUnit):
     else:
         h.heroSrc = "Normal"
     return h
+
 
 
 def parseRawUnitStat(rawUnitStat, allUnits):
@@ -239,8 +267,10 @@ def parseRawUnitSkill(rawUnitSkill, allSkills, allUnits):
     sr = SkillReq()
     sr.skill = s
     sr.slot = s.slot
-    sr.defaultRarity = tryStrToInt(rawUnitSkill["defaultRarity"])
-    sr.unlockRarity = tryStrToInt(rawUnitSkill["unlockRarity"])
+    if "defaultRarity" in rawUnitSkill:
+        sr.defaultRarity = tryStrToInt(rawUnitSkill["defaultRarity"])
+    if "unlockRarity" in rawUnitSkill:
+        sr.unlockRarity = tryStrToInt(rawUnitSkill["unlockRarity"])
     # print(h,sr)
     h.skillReqs.append(sr)
     return
