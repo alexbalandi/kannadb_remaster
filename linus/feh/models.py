@@ -445,13 +445,13 @@ def upload_to_dir(instance, filename):
 class Hero(models.Model):
 
     # Linus
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
 
     # Mad Dog
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=200)
 
     # name and title stripped off special characters, for search.
-    stripped_name = models.CharField(max_length=100)
+    stripped_name = models.CharField(max_length=300)
 
     # AVAILABILITY.GHB
     availability = models.CharField(max_length=15, choices=AVAILABILITY_PAIRS)
@@ -468,9 +468,9 @@ class Hero(models.Model):
     # COLOR.GREEN
     color = models.CharField(max_length=15, choices=COLOR_PAIRS)
 
-    origin_game = models.CharField(max_length=50)
+    origin_game = models.CharField(max_length=200)
 
-    artist = models.CharField(max_length=100)
+    artist = models.CharField(max_length=200)
 
     # for leg, mythics
     season = models.CharField(max_length=15, blank=True)
@@ -484,7 +484,7 @@ class Hero(models.Model):
 
     release_date = models.DateField()
 
-    skills = ArrayField(models.CharField(max_length=100))
+    skills = ArrayField(models.CharField(max_length=400))
 
     gender = models.CharField(max_length=10)
 
@@ -807,10 +807,10 @@ class Hero(models.Model):
 class Skill(models.Model):
 
     # Basilikos
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
 
     # name stripped off special characters, for search.
-    stripped_name = models.CharField(max_length=100)
+    stripped_name = models.CharField(max_length=200)
 
     # Accelerate special cooldown
     description = models.CharField(max_length=2000)
