@@ -82,6 +82,7 @@ class GAME(object):
     CORRIN = "G_12_CORRIN"
     SOTHIS = "G_13_SOTHIS"
     ITSUKI = "G_14_ITSUKI"
+    ALEAR = "G_15_ALEAR"
 
 
 TEXT_TO_GAME_MAP = {
@@ -94,9 +95,11 @@ TEXT_TO_GAME_MAP = {
     "Fire Emblem: Mystery of the Emblem": GAME.MARTH,
     "Fire Emblem Awakening": GAME.CHROM,
     "Fire Emblem: Path of Radiance": GAME.IKE,
+    "Fire Emblem: Engage": GAME.ALEAR,
     "Fire Emblem: Thracia 776": GAME.LEIF,
     "Fire Emblem: New Mystery of the Emblem": GAME.MARTH,
     "Fire Emblem: Three Houses": GAME.SOTHIS,
+    "Fire Emblem: Three Hopes": GAME.SOTHIS,
     "Fire Emblem: Genealogy of the Holy War": GAME.SELIPH,
     "Fire Emblem: The Sacred Stones": GAME.EPHRAIM,
     "Fire Emblem Echoes: Shadows of Valentia": GAME.ALM,
