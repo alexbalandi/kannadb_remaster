@@ -152,6 +152,8 @@ def parseRawUnit(rawUnit):
         h.properties = properties
     else:
         properties = []
+    if "rearmed" in properties:
+        h.isRearmed = True
     if "refresher" in properties:
         h.isDancer = True
     if "tempest" in properties:

@@ -1,16 +1,16 @@
-class Skill(object):    
+class Skill(object):
     def __init__(self):
         self.name = ""
         self.wikiName = ""          # gamepedia base key
         self.isEnemyOnly = False    # rokkr and stuff
-        self.isRefine = False   
+        self.isRefine = False
         self.refineType = ""        # for refines
-        self.isPrf = False 
+        self.isPrf = False
         self.isSeal = False         # e.g. QR
         self.cost = 0               # SP cost
         self.range = 0              # weaps, assist
         self.desc = ""
-        self.slot = ""              
+        self.slot = ""
         self.cd = 0                 # specials
         self.url = ""               # full pedia url
         self.page = ""              # pedia page
@@ -21,7 +21,7 @@ class Skill(object):
 
         # Infantry|Armored|Cavalry|Flying
         self.movePerms = []         # equippable movetypes
-        # Red|Blue|Green|Colorless 
+        # Red|Blue|Green|Colorless
         # Sword|Lance|Axe|Bow|Dagger|Tome|Staff|Breath|Beast
         self.weaponPerms = []       # equippable weapypes
         self.properties = []
@@ -36,7 +36,7 @@ class Skill(object):
         if (self.isRefine):
             return self.wikiName
         else:
-            return self.name    
+            return self.name
     def __repr__(self):
         return self.__str__()
 
@@ -47,15 +47,15 @@ class Refine(object):
         self.refinePath = ""        # skill1/skill2/stats
         self.desc = ""              # changed desc if any
     def __str__(self):
-        return self.skill.wikiName    
+        return self.skill.wikiName
     def __repr__(self):
         return self.__str__()
 
 class Seal(object):
     def __init__(self):
         self.skill = None           # the underlying skill
-        self.badgeColor = ""        
-        self.badgeCost = 0     
+        self.badgeColor = ""
+        self.badgeCost = 0
         self.greatbadgeCost = 0
         self.coinCost = 0
         self.isMax = False          # as far as seals are concerned
@@ -87,28 +87,29 @@ class Hero(object):
         ]
         self.statArray = [None,None,None,None,None,None]
         # weaponReqs has been folded into skillReqs
-        self.skillReqs = []  
-        
-        self.color = "" 
-        # Red|Blue|Green|Colorless 
+        self.skillReqs = []
+
+        self.color = ""
+        # Red|Blue|Green|Colorless
         # Sword|Lance|Axe|Bow|Dagger|Tome|Staff|Breath|Beast
         self.weapon = ""
         # Infantry|Armored|Cavalry|Flying
         self.move = ""
-        
+
         self.artist = ""
-        self.gender = ""        
+        self.gender = ""
         self.desc = ""
         self.origin = ""
-        self.heroSrc = "" 
-        self.duel = 0           # for legendaries/duos    
+        self.heroSrc = ""
+        self.duel = 0           # for legendaries/duos
         self.season = ""        # for mythics/legs
         self.duoSkill = ""
         self.harmonizedSkill = ""
         self.rarities = []
         self.avails = []
         self.properties = []
-        self.isDancer = False 
+        self.isDancer = False
+        self.isRearmed = False
 
 
     def getSkills(self):
@@ -124,12 +125,12 @@ class Hero(object):
         return [s.skill for s in self.skillReqs if s.isMax]
 
     def getMaxWeapons(self):
-        return [s for s in self.getMaxSkills() if s.slot == "weapon"] 
-          
+        return [s for s in self.getMaxSkills() if s.slot == "weapon"]
+
     def __str__(self):
-        return self.full_name    
+        return self.full_name
     def __repr__(self):
-        return self.__str__() 
+        return self.__str__()
 
 class SkillReq(object):
     def __init__(self):
@@ -146,7 +147,7 @@ class SkillReq(object):
         else:
             return result
     def __repr__(self):
-        return self.__str__() 
+        return self.__str__()
 
 class Availability(object):
     def __init__(self):
