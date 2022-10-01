@@ -68,6 +68,9 @@ class Seal(object):
 class Hero(object):
     def __init__(self):
         self.name = ""
+        # default to big number/6 in case its a new hero
+        self.intID = 9999
+        self.book = 6
         self.mod = ""
         self.full_name = ""
         self.releaseDate = ""

@@ -202,7 +202,8 @@ def getRawUnits():
         'Person',
         'Origin',
         # 'TagID',
-        # 'IntID',
+        # 0-189, 190-316, 317-453, 454-593, 594-737
+        'IntID',
         'Gender',
         'WeaponType',
         'MoveType',

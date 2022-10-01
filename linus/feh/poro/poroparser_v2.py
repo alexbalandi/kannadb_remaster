@@ -112,6 +112,18 @@ def parseRawSeal(rawSeal, allSkills):
 def parseRawUnit(rawUnit):
     h = Hero()
     h.name = rawUnit["Name"]
+    h.intID = rawUnit["IntID"]
+    h.book = 6
+    if h.intID < 190:
+        h.book = 1
+    elif h.intID < 317:
+        h.book = 2
+    elif h.intID < 454:
+        h.book = 3
+    elif h.intID < 594:
+        h.book = 4
+    elif h.intID < 738:
+        h.book = 5
     if "Title" in rawUnit:
         h.mod = rawUnit["Title"].replace('&quot;', '"')
     h.full_name = h.name + ":" + h.mod
