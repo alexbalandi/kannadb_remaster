@@ -112,7 +112,7 @@ def parseRawSeal(rawSeal, allSkills):
 def parseRawUnit(rawUnit):
     h = Hero()
     h.name = rawUnit["Name"]
-    h.intID = rawUnit["IntID"]
+    h.intID = tryStrToInt(rawUnit["IntID"])
     h.book = 6
     if h.intID < 190:
         h.book = 1
