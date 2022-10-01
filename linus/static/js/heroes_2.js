@@ -7,7 +7,7 @@ $(document).ready(function () {
     ['book', 27],
     ['generation', 28],
     ['availability', 29],
-    ['origin_game', 31],
+    ['origin_games', 31, true],  // true = search inside the string
     ['gender', 33],
     ['dancer', 34],
     ['resplendent', 37],
@@ -45,13 +45,26 @@ $(document).ready(function () {
       for (var i = 0; i < filters.length; ++i) {
         var alltypes = new Set();
         var classname = filters[i][0];
+        var is_search_in = filters[i][2];
 
         $('button.active.' + classname + '-btn').each(function (index) {
           alltypes.add($(this).attr('data-id'));
         });
 
-        if (alltypes.size && !alltypes.has(data[filters[i][1]])) {
-          return false;
+
+        if (alltypes.size) {
+          if (is_search_in) {
+            for (var testtype of alltypes) {
+              var tmpdata = data[filters[i][1]];
+              if (!tmpdata.includes(testtype)) {
+                return false;
+              }
+            }
+          } else {
+            if (!alltypes.has(data[filters[i][1]])) {
+              return false;
+            }
+          }
         }
       }
 
@@ -79,6 +92,15 @@ $(document).ready(function () {
         dataField.icon +
         '">';
     } else return dataField.name;
+  };
+
+  var renderIcons = function (dataField, type) {
+    var result = "";
+    for (var i = 0; i < dataField.length; ++i) {
+      dataField[i].name = dataField[i].code;
+      result += renderIcon(dataField[i], type);
+    }
+    return result;
   };
 
   var renderStat = function (dataField, type) {
@@ -171,7 +193,7 @@ $(document).ready(function () {
       { data: 'availability' },
 
       { data: 'skills', render: renderSkills, },
-      { data: 'origin_game', render: renderIcon, },
+      { data: 'origin_games', render: renderIcons, },
       { data: 'stripped_name' },
       { data: 'gender' },
       { data: 'is_dancer' },

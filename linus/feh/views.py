@@ -27,7 +27,7 @@ from .filters import (
     get_generation_filter,
     get_movement_permission_filter,
     get_movement_type_filter,
-    get_origin_game_filter,
+    get_origin_games_filter,
     get_season_filter,
     get_skill_slot_filter,
     get_stat_filter,
@@ -311,11 +311,7 @@ def HeroesListAjax(request):
 
         herodata["availability"] = hero.availability
         herodata["skills"] = hero.skills
-        herodata["origin_game"] = dict(
-            name=hero.game_code,
-            icon=hero.game_icon,
-            title=hero.game_human,
-        )
+        herodata["origin_games"] = hero.games
         herodata["stripped_name"] = hero.stripped_name
         herodata["gender"] = hero.gender
         herodata["is_dancer"] = hero.is_dancer
@@ -370,7 +366,7 @@ class HeroesList(KannadbListBase):
             get_availability_filter(heroes),
             get_true_false_filter(id="dancer", title="Dancer"),
             get_true_false_filter(id="resplendent", title="Resplendent"),
-            get_origin_game_filter(heroes),
+            get_origin_games_filter(heroes),
             get_book_filter(heroes),
             get_generation_filter(heroes),
             get_gender_filter(heroes),

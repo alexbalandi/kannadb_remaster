@@ -4,6 +4,8 @@ from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
 from django.templatetags.static import static
 
+from linus.feh.utils import YearDifferenceRounded
+
 
 # Create your models here.
 class AVAILABILITY(object):
@@ -19,6 +21,7 @@ class AVAILABILITY(object):
     DUO = "A_DUO"
     HARMONIZED = "A_HARMONIZED"
     ASCENDANT = "A_ASCENDANT"
+    REARMED = "A_REARMED"
 
 
 AVAILABILITY_PAIRS = (
@@ -62,6 +65,10 @@ AVAILABILITY_PAIRS = (
         AVAILABILITY.ASCENDANT,
         "Ascendant",
     ),
+    (
+        AVAILABILITY.REARMED,
+        "Rearmed",
+    ),
 )
 
 AVAILABILITY_HUMAN_READABLE = dict(AVAILABILITY_PAIRS)
@@ -99,7 +106,7 @@ TEXT_TO_GAME_MAP = {
     "Fire Emblem: Thracia 776": GAME.LEIF,
     "Fire Emblem: New Mystery of the Emblem": GAME.MARTH,
     "Fire Emblem: Three Houses": GAME.SOTHIS,
-    "Fire Emblem: Three Hopes": GAME.SOTHIS,
+    "Fire Emblem Warriors: Three Hopes": GAME.SOTHIS,
     "Fire Emblem: Genealogy of the Holy War": GAME.SELIPH,
     "Fire Emblem: The Sacred Stones": GAME.EPHRAIM,
     "Fire Emblem Echoes: Shadows of Valentia": GAME.ALM,
@@ -429,6 +436,17 @@ COLOR_PAIRS = (
 COLOR_HUMAN_READABLE = dict(COLOR_PAIRS)
 
 
+BOOK_EPOCH = date(day=5, month=12, year=2020)
+BOOK_EPOCH_BOOK_BASE = 5
+BOOK_EPOCH_RESET_DAY = 5
+BOOK_EPOCH_RESET_MONTH = 12
+
+GENERATION_EPOCH = date(day=12, month=8, year=2021)
+GENERATION_EPOCH_BASE = 6
+
+GENERATION_MAX = GENERATION_EPOCH_BASE + YearDifferenceRounded(date.today(), GENERATION_EPOCH)
+
+
 BOOK_BEGIN_DATES = [
     [5, date(day=7, month=12, year=2020)],
     [4, date(day=6, month=12, year=2019)],
@@ -438,7 +456,6 @@ BOOK_BEGIN_DATES = [
 ]
 
 
-GENERATION_MAX = 6
 
 
 def upload_to_dir(instance, filename):
@@ -524,7 +541,15 @@ class Hero(models.Model):
             day=7, month=2, year=2019
         ):
             dragonflowers = 2
-        dragonflowers += min(2, GENERATION_MAX - self.generation)
+
+        dragonflowers += GENERATION_MAX - self.generation
+        if self.generation == 1:
+            dragonflowers -= 3
+        elif self.generation == 2:
+            dragonflowers -= 2
+        elif self.generation == 3:
+            dragonflowers -= 1
+
         return dragonflowers
 
     @property
@@ -663,12 +688,18 @@ class Hero(models.Model):
         return MOVEMENT_TYPE_HUMAN_READABLE.get(self.movement_type)
 
     @property
-    def game_icon(self):
-        code = self.game_code
-        if code:
-            return static("images/icons/ICON_{0}.png".format(code))
-        else:
-            return None
+    def games(self):
+        result = []
+
+        for game in self.origin_game.split(','):
+            code = TEXT_TO_GAME_MAP.get(game, '')
+            result.append(dict(
+                code=code,
+                icon=static('images/icons/ICON_{0}.png'.format(code)),
+                human=GAME_READABLE.get(code),
+                title=GAME_READABLE.get(code)
+            ))
+        return result
 
     @property
     def game_human(self):
@@ -747,8 +778,12 @@ class Hero(models.Model):
         ]:
             return 3
 
-        if self.release_date >= date(day=12, month=8, year=2021):
-            return 6
+        epoch = GENERATION_EPOCH
+        epoch_generation = GENERATION_EPOCH_BASE
+
+        if self.release_date >= epoch:
+            # do sekrit poromathematics
+            return epoch_generation + YearDifferenceRounded(self.release_date, epoch)
         if self.release_date >= date(day=15, month=8, year=2020):
             return 5
         if self.release_date >= date(day=16, month=8, year=2019):
@@ -770,12 +805,17 @@ class Hero(models.Model):
 
     def save(self, *args, **kwargs):
         found = False
-        for book, book_begin_date in BOOK_BEGIN_DATES:
-            if self.release_date >= book_begin_date:
-                self.book = book
-                found = True
-                break
-        assert found, self
+
+        if self.release_date >= BOOK_EPOCH:
+            # Do sekrit poromathematics to calculate book number after book 6
+            self.book = BOOK_EPOCH_BOOK_BASE + YearDifferenceRounded(self.release_date, BOOK_EPOCH)
+        else:
+            for book, book_begin_date in BOOK_BEGIN_DATES:
+                if self.release_date >= book_begin_date:
+                    self.book = book
+                    found = True
+                    break
+            assert found, self
 
         self.generation = self.ComputeGeneration()
 

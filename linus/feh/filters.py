@@ -157,18 +157,18 @@ def get_availability_filter(heroes: List[Hero]) -> Filter:
     )
 
 
-def get_origin_game_filter(heroes: List[Hero]) -> Filter:
-    origin_games = sorted(
-        set(
-            [
-                (hero.game_code, ("img", hero.game_icon, hero.game_human))
-                for hero in heroes
-            ]
-        )
-    )
+def get_origin_games_filter(heroes: List[Hero]) -> Filter:
+    origin_games_raw = set()
+    for hero in heroes:
+        for game in hero.games:
+            origin_games_raw.add(
+                (game['code'], ('img', game['icon'], game['human']))
+            )
+
+    origin_games = sorted(origin_games_raw)
 
     return Filter(
-        id="origin_game",
+        id="origin_games",
         content=origin_games,
         btn_class="btn-choose-any",
         title="Game",

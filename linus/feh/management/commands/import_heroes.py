@@ -30,6 +30,7 @@ AV_MAP = dict(
     Duo=AVAILABILITY.DUO,
     Harmonized=AVAILABILITY.HARMONIZED,
     Ascended=AVAILABILITY.ASCENDANT,
+    Rearmed=AVAILABILITY.REARMED,
 )
 
 MV_MAP = dict(

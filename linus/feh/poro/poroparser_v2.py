@@ -155,6 +155,7 @@ def parseRawUnit(rawUnit):
         properties = []
     if "rearmed" in properties:
         h.isRearmed = True
+        h.heroSrc = 'Rearmed'
     if "refresher" in properties:
         h.isDancer = True
     if "tempest" in properties:
@@ -261,7 +262,7 @@ def parseRawUnitStat(rawUnitStat, allUnits):
     else:
         weapType = "Melee"
     lvl_1_bst = sum([s[1] for s in lvl15Stats])
-    growth_rate = sum(gr3)    
+    growth_rate = sum(gr3)
     bases = unitGenerations[move][weapType]
     for i in range(len(bases)):
         (l1, gr) = bases[i]
