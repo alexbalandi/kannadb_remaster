@@ -7,6 +7,7 @@ import warnings
 import html
 import pytz
 from w3lib.html import replace_entities
+from poroGen import unitGenerations
 from .poroclasses import Skill, Refine, Seal, Hero, SkillReq, Availability
 
 def removeEmptyStrings(arr):
