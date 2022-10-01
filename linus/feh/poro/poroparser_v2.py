@@ -251,6 +251,50 @@ def parseRawUnitStat(rawUnitStat, allUnits):
     # [print(s) for s in h.lvl_1_Stats]
     # [print(s) for s in h.lvl_40_Stats]
     # print(h.statArray)
+    weapon = h.weapon.split(" ")[1]
+    move = h.move
+    if weapon in ["Dagger", "Bow"]:
+        weapType = "RangedPhys"
+    elif weapon in ["Tome", "Staff"]:
+        weapType = "RangedMag"
+    else:
+        weapType = "Melee"
+    lvl_1_bst = sum([s[1] for s in lvl15Stats])
+    growth_rate = sum(gr3)    
+    bases = unitGenerations[move][weapType]
+    for i in range(len(bases)):
+        (l1, gr) = bases[i]
+        j = i+1
+        if (l1, gr) == (lvl_1_bst, growth_rate):
+            # print(h.full_name, "Gen %d"%j)
+            h.generation = j
+            return
+        elif (l1+8, gr-30) == (lvl_1_bst, growth_rate):
+            # print(h.full_name, "Gen %d Veteran"%j)
+            h.generation = j
+            h.isVeteran = True
+            return
+        elif (l1-8, gr+30) == (lvl_1_bst, growth_rate):
+            # print(h.full_name, "Gen %d Trainee"%j)
+            h.generation = j
+            h.isTrainee = True
+            return
+        elif (l1, gr+10) == (lvl_1_bst, growth_rate):
+            # print(h.full_name, "Gen %d Advanced"%j)
+            h.generation = j
+            h.isAdvanced = True
+            return
+        elif (l1-8, gr) == (lvl_1_bst, growth_rate):
+            # print(h.full_name, "Gen %d Refresher"%j)
+            h.generation = j
+            return
+        elif (l1-8, gr-5) == (lvl_1_bst, growth_rate):
+            # print(h.full_name, "Gen %d Refresher"%j)
+            h.generation = j
+            return
+        else:
+            # probably an enemy
+            h.generation = 0
 
     return
 

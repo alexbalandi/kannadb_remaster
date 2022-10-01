@@ -110,6 +110,11 @@ class Hero(object):
         self.properties = []
         self.isDancer = False
         self.isRearmed = False
+        # Calculated via growth rates
+        self.generation = 0
+        self.isTrainee = False
+        self.isVeteran = False
+        self.isAdvanced = False
 
 
     def getSkills(self):
