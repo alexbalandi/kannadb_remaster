@@ -132,6 +132,8 @@ def parseRawUnit(rawUnit):
     h.page = rawUnit["Page"]
     h.pageID = rawUnit["PageID"]
     h.url = "https://feheroes.gamepedia.com/" + html.unescape(h.page).replace(" ", "_").replace("\"","%22");
+    h.heroSrc = "Normal"
+
     if "Origin" in rawUnit:
         h.origin = rawUnit["Origin"]
     if "ReleaseDate" in rawUnit:
@@ -177,8 +179,6 @@ def parseRawUnit(rawUnit):
     # in the properties
     elif "special" in h.properties:
         h.heroSrc = "Special"
-    else:
-        h.heroSrc = "Normal"
     return h
 
 def parseRawUnitStat(rawUnitStat, allUnits):
