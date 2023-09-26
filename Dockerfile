@@ -1,6 +1,10 @@
 FROM python:3.10
 
-# Set up non-interactive apt installation
+# Set working directory
+WORKDIR /app
+
+# Copy project files into the Docker image
+COPY . /app
 
 # Install dependencies
 RUN which python
