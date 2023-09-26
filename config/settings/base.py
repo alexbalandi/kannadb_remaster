@@ -81,7 +81,7 @@ LOCAL_APPS = [
     'linus.users.apps.UsersAppConfig',
     #'linus.feh.apps.FehConfig',
     'linus.feh',
-    'linus', # important to find templates
+    # important to find templates
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
