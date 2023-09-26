@@ -22,11 +22,8 @@ RUN pip3 install --upgrade pip \
     && poetry install --no-dev
     
 COPY . /app
+RUN chmod +x /app/run.sh
 # Run migrations and other project setup commands
-RUN python3 manage.py migrate
-RUN python3 manage.py curl_heroes
-RUN python3 manage.py import_heroes
-RUN python3 manage.py clear_cache
 
 # Command to run the application using Gunicorn
 ENTRYPOINT [ "gunicorn", "config.wsgi:application" ]
