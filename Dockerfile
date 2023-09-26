@@ -7,7 +7,8 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
-RUN pip3 install --upgrade pip && apt update && install libmemcached-dev
+RUN pip3 install --upgrade pip
+RUN apt-get update && apt-get install -y --no-install-recommends libmemcached-dev
 RUN python3 -m venv --copies /opt/venv && \
     . /opt/venv/bin/activate && \
     pip3 install -r requirements.txt
