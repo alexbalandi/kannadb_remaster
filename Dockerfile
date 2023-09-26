@@ -19,13 +19,14 @@ RUN cd /tmp && \
     make altinstall
 
 # Install dependencies
-RUN python -m venv --copies /opt/venv && \
+RUN which python3
+RUN python3 -m venv --copies /opt/venv && \
     . /opt/venv/bin/activate && \
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
 
-RUN python manage.py migrate && \
-    python manage.py curl_heroes && \
-    python manage.py import_heroes && \
-    python manage.py clear_cache
+RUN python3 manage.py migrate && \
+    python3 manage.py curl_heroes && \
+    python3 manage.py import_heroes && \
+    python3 manage.py clear_cache
 
 ENTRYPOINT [ "gunicorn config.wsgi:application" ]
