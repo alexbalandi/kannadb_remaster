@@ -32,7 +32,7 @@ DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # no
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'your_app_name_cache',
+        'LOCATION': 'kannadb_cache',
     }
 }
 
