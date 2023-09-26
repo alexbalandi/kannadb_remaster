@@ -46,7 +46,7 @@ html5lib==1.0.1
 idna==2.8
 imagesize==1.1.0
 importlib-metadata==4.6.1
-ipdb==0.11
+ipdb
 ipython==7.2.0
 ipython-genutils==0.2.0
 isort==5.9.2
