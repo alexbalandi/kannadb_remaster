@@ -147,6 +147,38 @@ MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')  # noqa F405
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
+#                        'pathname=%(pathname)s lineno=%(lineno)s ' +
+#                        'funcname=%(funcName)s %(message)s'),
+#             'datefmt': '%Y-%m-%d %H:%M:%S'
+#         },
+#         'simple': {
+#             'format': '%(levelname)s %(message)s'
+#         }
+#     },
+#     'handlers': {
+#         'null': {
+#             'level': 'DEBUG',
+#             'class': 'logging.NullHandler',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose',
+#         }
+#     },
+#     'loggers': {
+#         'testlogger': {
+#             'handlers': ['console'],
+#             'level': 'INFO',
+#         }
+#     }
+# } #TODO: uncomment when in prod, mebbe?
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -176,9 +208,15 @@ LOGGING = {
         'testlogger': {
             'handlers': ['console'],
             'level': 'INFO',
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
         }
     }
 }
+
 
 
 import sentry_sdk
