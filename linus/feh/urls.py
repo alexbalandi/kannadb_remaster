@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path as url
 from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.views.generic.base import TemplateView
