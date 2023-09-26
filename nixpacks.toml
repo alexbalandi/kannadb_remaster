@@ -1,5 +1,5 @@
 [build]
-nixpacksVersion = "1.15.0"
+nixpacksVersion = "1.14.0"
 [phases.setup]
 #nixPkgs = ["...", "glibc", "curl", "openssl"]
 
