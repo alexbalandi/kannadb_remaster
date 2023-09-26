@@ -183,7 +183,7 @@ LOGGING = {
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-SENTRY_DSN = env('SENTRY_DSN', default='NOTSET')
+SENTRY_DSN = env('SENTRY_DSN', default=None)
 sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=[DjangoIntegration()],
