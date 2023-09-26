@@ -1,6 +1,6 @@
-buildImage = 'ghcr.io/railwayapp/nixpacks:latest'
-
+[build]
+nixpacksVersion = "1.15.0"
 [phases.setup]
 #nixPkgs = ["...", "glibc", "curl", "openssl"]
 
-aptPkgs = ["...", "ghdl", "libcurl4-openssl-dev", "libssl-dev"]   # Install the wget package with apt-get
+aptPkgs = ["...", "libcurl4-openssl-dev", "libssl-dev"]   # Install the wget package with apt-get
