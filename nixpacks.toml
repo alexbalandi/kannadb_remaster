@@ -1,4 +1,4 @@
 [phases.setup]
-nixPkgs = ["...", "libcurl4-openssl-dev", "libssl-dev"]
+#nixPkgs = ["...", "glibc", "curl", "openssl"]
 
-#aptPkgs = ["...", "python-dev", "libcurl4-openssl-dev", "libssl-dev"]   # Install the wget package with apt-get
+aptPkgs = ["...", "ghdl", "libcurl4-openssl-dev", "libssl-dev"]   # Install the wget package with apt-get
