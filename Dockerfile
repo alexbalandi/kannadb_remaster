@@ -2,7 +2,7 @@
 FROM python:3.10
 
 # Set environment variables for Poetry
-ENV POETRY_VERSION=1.1.10 \
+ENV POETRY_VERSION=1.5.0 \
     POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_CACHE_DIR='/var/cache/pypoetry'
@@ -11,7 +11,7 @@ ENV POETRY_VERSION=1.1.10 \
 WORKDIR /app
 
 # Copy project files into the Docker image
-COPY . /app
+COPY ./pyproject.toml /app/pyproject.toml
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends libmemcached-dev
@@ -20,7 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends libmemcached-de
 RUN pip3 install --upgrade pip \
     && pip3 install "poetry==$POETRY_VERSION" \
     && poetry install --no-dev
-
+    
+COPY . /app
 # Run migrations and other project setup commands
 RUN python3 manage.py migrate && \
     python3 manage.py curl_heroes && \
