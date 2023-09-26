@@ -5,7 +5,6 @@ description = "FEH database"
 authors = ["Leenis, Poron, Avestis"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "linus_kannadb"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
