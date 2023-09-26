@@ -1,3 +1,3 @@
 [phases.setup]
 #nixPkgs = ["...", "ffmpeg"] # Install the ffmpeg package from Nix
-aptPkgs = ["...", "libcurl4-openssl-dev", "libssl-dev"]   # Install the wget package with apt-get
+aptPkgs = ["...", "libc6", "libcurl4-openssl-dev", "libssl-dev"]   # Install the wget package with apt-get
