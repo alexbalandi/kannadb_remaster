@@ -8,16 +8,13 @@ from linus.feh.poro.poroparser_v2 import LoadPoro
 
 from .poroAccents import accents
 
+accents_trans_table = str.maketrans(accents)
 apiquery = "https://feheroes.gamepedia.com/api.php?"
 
 
 def getHeroMFname(h):
-    basename = h.name + " " + h.mod
-    mfname = ""
-    for c in basename:
-        if c in accents:
-            c = accents[c]
-        mfname += c
+    basename: str = h.name + " " + h.mod
+    mfname = basename.translate(accents_trans_table)
     mfname = re.sub("[^A-Za-z _.0-9-]", "", mfname)
     # for now no resplendent
     mfname = "File:%s Face FC.webp" % mfname
