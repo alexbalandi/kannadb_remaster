@@ -102,7 +102,7 @@ TEXT_TO_GAME_MAP = {
     "Fire Emblem: Mystery of the Emblem": GAME.MARTH,
     "Fire Emblem Awakening": GAME.CHROM,
     "Fire Emblem: Path of Radiance": GAME.IKE,
-    "Fire Emblem: Engage": GAME.ALEAR,
+    "Engage": GAME.ALEAR,  # this one is different in wiki
     "Fire Emblem: Thracia 776": GAME.LEIF,
     "Fire Emblem: New Mystery of the Emblem": GAME.MARTH,
     "Fire Emblem: Three Houses": GAME.SOTHIS,
