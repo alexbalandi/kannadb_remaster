@@ -1,8 +1,5 @@
 # Kannadb Remaster
-
-Random Linus Codes
-
-![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)(https://github.com/pydanny/cookiecutter-django/)
+Originally ![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)[Link](https://github.com/pydanny/cookiecutter-django/)
 
 **License:** MIT
 
