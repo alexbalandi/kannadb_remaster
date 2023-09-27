@@ -1,5 +1,5 @@
 # Kannadb Remaster
-Originally ![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)[Link](https://github.com/pydanny/cookiecutter-django/)
+Originally ![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)[ (Link) ](https://github.com/pydanny/cookiecutter-django/) , lots of brain and food by [Linus](https://github.com/LinusMain) and [Pororo](https://github.com/poroporon)
 
 **License:** MIT
 
