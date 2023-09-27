@@ -1,23 +1,21 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% extends "base.html" %} {% load crispy_forms_tags %} {% block title %}{{ title
+}} oh my god{% endblock %} {% block content %}
+<h1>{{ title }}</h1>
 
-{% block title %}{{ title }} oh my god{% endblock %}
-
-{% block content %}
-  <h1>{{ title }}</h1>
-
-  <div class='row'>
-    <div class='col-md-4'>
-      <form class="form-horizontal" method="post" action="">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="control-group">
-          <div class="controls">
-             <button type="submit" class="btn">I UNDERSTAND THE RISK AND LOAD ON SERVER BUT I WISH TO CONTINUE! DO NOT CLICK MORE THAN ONCE. THIS WILL TAKE A WHILE AROUND 10 MINUTES.</button> </div>
+<div class="row">
+  <div class="col-md-4">
+    <form class="form-horizontal" method="post" action="">
+      {% csrf_token %} {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn">
+            I UNDERSTAND THE RISK AND LOAD ON SERVER BUT I WISH TO CONTINUE! DO
+            NOT CLICK MORE THAN ONCE. THIS WILL TAKE A WHILE AROUND 10 MINUTES.
+          </button>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
+</div>
 
 {% endblock %}
-

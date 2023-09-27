@@ -7,18 +7,45 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feh', '0006_hero_boonbanes'),
+        ("feh", "0006_hero_boonbanes"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='hero',
-            name='availability',
-            field=models.CharField(choices=[('A_STANDARD', 'Standard Pool'), ('A_SPECIAL', 'Special Hero'), ('A_GHB', 'Grand Hero Battle'), ('A_TT', 'Tempest Trials'), ('A_LEGENDARY', 'Legendary Hero'), ('A_MYTHIC', 'Mythic Hero'), ('A_STORY', 'Story Hero'), ('A_DUO', 'Duo Hero')], max_length=15),
+            model_name="hero",
+            name="availability",
+            field=models.CharField(
+                choices=[
+                    ("A_STANDARD", "Standard Pool"),
+                    ("A_SPECIAL", "Special Hero"),
+                    ("A_GHB", "Grand Hero Battle"),
+                    ("A_TT", "Tempest Trials"),
+                    ("A_LEGENDARY", "Legendary Hero"),
+                    ("A_MYTHIC", "Mythic Hero"),
+                    ("A_STORY", "Story Hero"),
+                    ("A_DUO", "Duo Hero"),
+                ],
+                max_length=15,
+            ),
         ),
         migrations.AlterField(
-            model_name='skill',
-            name='availabilities',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('A_STANDARD', 'Standard Pool'), ('A_SPECIAL', 'Special Hero'), ('A_GHB', 'Grand Hero Battle'), ('A_TT', 'Tempest Trials'), ('A_LEGENDARY', 'Legendary Hero'), ('A_MYTHIC', 'Mythic Hero'), ('A_STORY', 'Story Hero'), ('A_DUO', 'Duo Hero')], max_length=15), size=None),
+            model_name="skill",
+            name="availabilities",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    choices=[
+                        ("A_STANDARD", "Standard Pool"),
+                        ("A_SPECIAL", "Special Hero"),
+                        ("A_GHB", "Grand Hero Battle"),
+                        ("A_TT", "Tempest Trials"),
+                        ("A_LEGENDARY", "Legendary Hero"),
+                        ("A_MYTHIC", "Mythic Hero"),
+                        ("A_STORY", "Story Hero"),
+                        ("A_DUO", "Duo Hero"),
+                    ],
+                    max_length=15,
+                ),
+                size=None,
+            ),
         ),
     ]

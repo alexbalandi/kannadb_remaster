@@ -7,14 +7,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feh', '0012_auto_20200408_1125'),
+        ("feh", "0012_auto_20200408_1125"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='skill',
-            name='hero_stripped_names',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=200), default=[], size=None),
+            model_name="skill",
+            name="hero_stripped_names",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(max_length=200), default=[], size=None
+            ),
             preserve_default=False,
         ),
     ]

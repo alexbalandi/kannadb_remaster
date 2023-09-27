@@ -1,11 +1,6 @@
 from django.urls import path
 
-from linus.users.views import (
-    user_list_view,
-    user_redirect_view,
-    user_update_view,
-    user_detail_view,
-)
+from linus.users.views import user_detail_view, user_list_view, user_redirect_view, user_update_view
 
 app_name = "users"
 urlpatterns = [

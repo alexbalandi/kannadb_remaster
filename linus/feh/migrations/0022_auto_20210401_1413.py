@@ -7,24 +7,51 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feh', '0021_auto_20210328_1551'),
+        ("feh", "0021_auto_20210328_1551"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hero',
-            name='artist',
-            field=models.CharField(default='', max_length=100),
+            model_name="hero",
+            name="artist",
+            field=models.CharField(default="", max_length=100),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='hero',
-            name='f2p_level',
-            field=models.CharField(choices=[('F_00', 'Story'), ('F_02', '3* Standard Pool'), ('F_03', '3* Limited Pool'), ('F_04', '4* Standard Pool'), ('F_01', 'Grail'), ('F_05', '4* Limited Pool'), ('F_08', '5* Standard Pool'), ('F_09', '5* Limited Pool')], max_length=25),
+            model_name="hero",
+            name="f2p_level",
+            field=models.CharField(
+                choices=[
+                    ("F_00", "Story"),
+                    ("F_02", "3* Standard Pool"),
+                    ("F_03", "3* Limited Pool"),
+                    ("F_04", "4* Standard Pool"),
+                    ("F_01", "Grail"),
+                    ("F_05", "4* Limited Pool"),
+                    ("F_08", "5* Standard Pool"),
+                    ("F_09", "5* Limited Pool"),
+                ],
+                max_length=25,
+            ),
         ),
         migrations.AlterField(
-            model_name='skill',
-            name='f2p_levels',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('F_00', 'Story'), ('F_02', '3* Standard Pool'), ('F_03', '3* Limited Pool'), ('F_04', '4* Standard Pool'), ('F_01', 'Grail'), ('F_05', '4* Limited Pool'), ('F_08', '5* Standard Pool'), ('F_09', '5* Limited Pool')], max_length=25), size=None),
+            model_name="skill",
+            name="f2p_levels",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    choices=[
+                        ("F_00", "Story"),
+                        ("F_02", "3* Standard Pool"),
+                        ("F_03", "3* Limited Pool"),
+                        ("F_04", "4* Standard Pool"),
+                        ("F_01", "Grail"),
+                        ("F_05", "4* Limited Pool"),
+                        ("F_08", "5* Standard Pool"),
+                        ("F_09", "5* Limited Pool"),
+                    ],
+                    max_length=25,
+                ),
+                size=None,
+            ),
         ),
     ]

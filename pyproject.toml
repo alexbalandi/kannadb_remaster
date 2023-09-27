@@ -128,3 +128,34 @@ zipp = "^3.17.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+include = '\.py$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 120
+profile = "black"
+
+[tool.ruff]
+#Avoid enforcing line-length violations (`E501`)
+ignore = ["E501"]

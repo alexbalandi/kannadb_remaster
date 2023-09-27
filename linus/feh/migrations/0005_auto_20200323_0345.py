@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feh', '0004_auto_20200322_1807'),
+        ("feh", "0004_auto_20200322_1807"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='skill',
-            name='heroes',
+            model_name="skill",
+            name="heroes",
             field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=200), size=None),
         ),
     ]

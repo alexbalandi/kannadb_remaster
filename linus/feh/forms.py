@@ -1,10 +1,10 @@
-from datetime import datetime, date, time
+from datetime import date, datetime, time
 
+import pytz
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-import pytz
 
 
 def GetResetDate():
@@ -17,9 +17,7 @@ ARENA_RESET_EPOCH = GetResetDate()
 
 
 class AetherLiftForm(forms.Form):
-    aether = forms.IntegerField(
-        validators=[validators.MinValueValidator(0), validators.MaxValueValidator(1000)]
-    )
+    aether = forms.IntegerField(validators=[validators.MinValueValidator(0), validators.MaxValueValidator(1000)])
     lift = forms.IntegerField(
         validators=[
             validators.MinValueValidator(0),
@@ -68,9 +66,7 @@ class AetherLiftForm(forms.Form):
 
 
 class LucksackForm(forms.Form):
-    orbs = forms.IntegerField(
-        validators=[validators.MinValueValidator(0), validators.MaxValueValidator(1000)]
-    )
+    orbs = forms.IntegerField(validators=[validators.MinValueValidator(0), validators.MaxValueValidator(1000)])
 
     five_star_focus_chance_total = forms.FloatField(
         validators=[validators.MinValueValidator(0), validators.MaxValueValidator(1)],
@@ -112,53 +108,39 @@ class LucksackForm(forms.Form):
         initial=100,
     )
 
-    number_of_four_star_or_lower_units_with_the_same_color_as_target = (
-        forms.IntegerField(
-            validators=[
-                validators.MinValueValidator(0),
-                validators.MaxValueValidator(10000),
-            ],
-            initial=100,
-        )
+    number_of_four_star_or_lower_units_with_the_same_color_as_target = forms.IntegerField(
+        validators=[
+            validators.MinValueValidator(0),
+            validators.MaxValueValidator(10000),
+        ],
+        initial=100,
     )
 
-    number_of_four_star_or_lower_units_with_different_color_than_target = (
-        forms.IntegerField(
-            validators=[
-                validators.MinValueValidator(0),
-                validators.MaxValueValidator(10000),
-            ],
-            initial=300,
-        )
+    number_of_four_star_or_lower_units_with_different_color_than_target = forms.IntegerField(
+        validators=[
+            validators.MinValueValidator(0),
+            validators.MaxValueValidator(10000),
+        ],
+        initial=300,
     )
 
-    is_target_unit_already_in_summonable_pool = forms.BooleanField(
-        required=False, initial=False
-    )
+    is_target_unit_already_in_summonable_pool = forms.BooleanField(required=False, initial=False)
 
     def clean(self):
         cleaned_data = super().clean()
 
-        f1 = cleaned_data.get(
-            "number_of_four_star_or_lower_units_with_the_same_color_as_target"
-        )
-        f2 = cleaned_data.get(
-            "number_of_four_star_or_lower_units_with_different_color_than_target"
-        )
+        f1 = cleaned_data.get("number_of_four_star_or_lower_units_with_the_same_color_as_target")
+        f2 = cleaned_data.get("number_of_four_star_or_lower_units_with_different_color_than_target")
         if f1 + f2 == 0:
             raise forms.ValidationError("Ensure at least one four star or lower units")
 
         f1 = cleaned_data.get("five_star_focus_chance_total")
         f2 = cleaned_data.get("five_star_pitybreaker_chance_total")
         if f1 + f2 > 1:
-            raise forms.ValidationError(
-                "Sum of focus and pitybreaker chances must be at most 1"
-            )
+            raise forms.ValidationError("Sum of focus and pitybreaker chances must be at most 1")
 
         if cleaned_data.get("is_target_unit_already_in_summonable_pool"):
-            f1 = cleaned_data.get(
-                "number_of_five_star_units_with_the_same_color_as_target"
-            )
+            f1 = cleaned_data.get("number_of_five_star_units_with_the_same_color_as_target")
             if f1 < 1:
                 raise forms.ValidationError(
                     "if unit already in summonable pool, must exist at least one ssr unit with same color"

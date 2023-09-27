@@ -1,24 +1,26 @@
 import datetime
-import os
+import html
 import pickle
 import re
-import urllib.parse
 import warnings
-import html
+
 import pytz
 from w3lib.html import replace_entities
+
+from .poroclasses import Availability, Hero, Refine, Seal, Skill, SkillReq
 from .poroGen import unitGenerations
-from .poroclasses import Skill, Refine, Seal, Hero, SkillReq, Availability
+
 
 def removeEmptyStrings(arr):
     return [a for a in arr if not a == ""]
+
 
 def parseRawSkill(rawSkill):
     s = Skill()
     s.name = rawSkill["Name"]
     s.wikiName = rawSkill["WikiName"]
     if "RefinePath" in rawSkill:
-        s.isRefine = not '' == rawSkill["RefinePath"]
+        s.isRefine = not "" == rawSkill["RefinePath"]
         s.refineType = rawSkill["RefinePath"]
     if "Exclusive" in rawSkill:
         s.isPrf = "1" == rawSkill["Exclusive"] and not s.isRefine
@@ -37,7 +39,7 @@ def parseRawSkill(rawSkill):
         s.cd = tryStrToInt(rawSkill["Cooldown"])
 
     s.page = rawSkill["Page"]
-    s.url = "https://feheroes.gamepedia.com/" + html.unescape(s.page).replace(" ", "_").replace("\"","%22");
+    s.url = "https://feheroes.gamepedia.com/" + html.unescape(s.page).replace(" ", "_").replace('"', "%22")
 
     # split because Aether <= Sol,Luna
     if "Required" in rawSkill:
@@ -60,6 +62,7 @@ def parseRawSkill(rawSkill):
         s.stats = rawSkill["StatModifiers"]
     return s
 
+
 def parseRawUpgrade(rawUpgrade, allSkills):
     baseWeapKey = rawUpgrade["BaseWeapon"]
     intoWeapKey = rawUpgrade["UpgradesInto"]
@@ -77,12 +80,14 @@ def parseRawUpgrade(rawUpgrade, allSkills):
     baseWeap.refines.append(r)
     return r
 
+
 def parseRawEvolution(rawEvolution, allSkills):
     baseWeapKey = rawEvolution["BaseWeapon"]
     intoWeapKey = rawEvolution["EvolvesInto"]
     baseWeap = allSkills[baseWeapKey]
     intoWeap = allSkills[intoWeapKey]
     baseWeap.evolutions.append(intoWeap)
+
 
 def parseRawSeal(rawSeal, allSkills):
     skillName = rawSeal["Skill"]
@@ -110,6 +115,7 @@ def parseRawSeal(rawSeal, allSkills):
         return None
     return seal
 
+
 def parseRawUnit(rawUnit):
     h = Hero()
     h.name = rawUnit["Name"]
@@ -126,12 +132,12 @@ def parseRawUnit(rawUnit):
     elif h.intID < 738:
         h.book = 5
     if "Title" in rawUnit:
-        h.mod = rawUnit["Title"].replace('&quot;', '"')
+        h.mod = rawUnit["Title"].replace("&quot;", '"')
     h.full_name = h.name + ":" + h.mod
     h.wikiName = rawUnit["WikiName"]
     h.page = rawUnit["Page"]
     h.pageID = rawUnit["PageID"]
-    h.url = "https://feheroes.gamepedia.com/" + html.unescape(h.page).replace(" ", "_").replace("\"","%22");
+    h.url = "https://feheroes.gamepedia.com/" + html.unescape(h.page).replace(" ", "_").replace('"', "%22")
     h.heroSrc = "Normal"
 
     if "Origin" in rawUnit:
@@ -157,15 +163,15 @@ def parseRawUnit(rawUnit):
         properties = []
     if "rearmed" in properties:
         h.isRearmed = True
-        h.heroSrc = 'Rearmed'
+        h.heroSrc = "Rearmed"
     if "refresher" in properties:
         h.isDancer = True
     if "tempest" in properties:
         h.heroSrc = "TT"
-        h.rarities = [4,5]
+        h.rarities = [4, 5]
     elif "ghb" in properties:
         h.heroSrc = "GHB"
-        h.rarities = [3,4]
+        h.rarities = [3, 4]
     elif "duo" in properties:
         h.heroSrc = "Duo"
     elif "legendary" in properties:
@@ -181,16 +187,19 @@ def parseRawUnit(rawUnit):
         h.heroSrc = "Special"
     return h
 
+
 def parseRawUnitStat(rawUnitStat, allUnits):
     # print(rawUnitStat)
     heroKey = rawUnitStat["WikiName"]
     # because some elements in the table might be borken
-    if not heroKey in allUnits:
+    if heroKey not in allUnits:
         heroKey = heroKey + " ENEMY"
     h = allUnits[heroKey]
     stats = ["HP", "Atk", "Spd", "Def", "Res"]
     # convert middle stat to bane/neut/boon
-    lvl1BB = lambda x: (x - 1, x, x + 1)
+    def lvl1BB(x):
+        return x - 1, x, x + 1
+
     # black magic fuckery, smurt
     lvl15Stats = [lvl1BB(tryStrToInt(rawUnitStat["Lv1%s5" % (stat)])) for stat in stats]
     h.lvl_1_Stats[4] = lvl15Stats
@@ -214,7 +223,9 @@ def parseRawUnitStat(rawUnitStat, allUnits):
 
     gr3 = [tryStrToInt(rawUnitStat["%sGR3" % (stat)]) for stat in stats]
     # rarity, growth rate
-    rgr3ToGV = lambda r, gr3: int(0.39 * int(gr3 * (0.79 + 0.07 * r)))
+    def rgr3ToGV(r, gr3):
+        return int(0.39 * int(gr3 * (0.79 + 0.07 * r)))
+
     for star in range(1, 6):
         # calc the growth rates and collect baneboon info as we go
         hasBane = False
@@ -266,31 +277,31 @@ def parseRawUnitStat(rawUnitStat, allUnits):
     bases = unitGenerations[move][weapType]
     for i in range(len(bases)):
         (l1, gr) = bases[i]
-        j = i+1
+        j = i + 1
         if (l1, gr) == (lvl_1_bst, growth_rate):
             # print(h.full_name, "Gen %d"%j)
             h.generation = j
             return
-        elif (l1+8, gr-30) == (lvl_1_bst, growth_rate):
+        elif (l1 + 8, gr - 30) == (lvl_1_bst, growth_rate):
             # print(h.full_name, "Gen %d Veteran"%j)
             h.generation = j
             h.isVeteran = True
             return
-        elif (l1-8, gr+30) == (lvl_1_bst, growth_rate):
+        elif (l1 - 8, gr + 30) == (lvl_1_bst, growth_rate):
             # print(h.full_name, "Gen %d Trainee"%j)
             h.generation = j
             h.isTrainee = True
             return
-        elif (l1, gr+10) == (lvl_1_bst, growth_rate):
+        elif (l1, gr + 10) == (lvl_1_bst, growth_rate):
             # print(h.full_name, "Gen %d Advanced"%j)
             h.generation = j
             h.isAdvanced = True
             return
-        elif (l1-8, gr) == (lvl_1_bst, growth_rate):
+        elif (l1 - 8, gr) == (lvl_1_bst, growth_rate):
             # print(h.full_name, "Gen %d Refresher"%j)
             h.generation = j
             return
-        elif (l1-8, gr-5) == (lvl_1_bst, growth_rate):
+        elif (l1 - 8, gr - 5) == (lvl_1_bst, growth_rate):
             # print(h.full_name, "Gen %d Refresher"%j)
             h.generation = j
             return
@@ -300,15 +311,16 @@ def parseRawUnitStat(rawUnitStat, allUnits):
 
     return
 
+
 def parseRawUnitSkill(rawUnitSkill, allSkills, allUnits):
     heroKey = rawUnitSkill["WikiName"]
     skillKey = rawUnitSkill["skill"]
     # because some elements in the table might be borken
-    if not heroKey in allUnits:
+    if heroKey not in allUnits:
         heroKey = heroKey + " ENEMY"
-    if not heroKey in allUnits:
+    if heroKey not in allUnits:
         warnings.warn(rawUnitSkill["WikiName"] + " is not in allUnits yet")
-    if not skillKey in allSkills:
+    if skillKey not in allSkills:
         warnings.warn(skillKey + " is not in allSkills yet")
         return
     h = allUnits[heroKey]
@@ -324,11 +336,12 @@ def parseRawUnitSkill(rawUnitSkill, allSkills, allUnits):
     h.skillReqs.append(sr)
     return
 
+
 def parseRawLeg(rawLegHero, allUnitPages):
     page = rawLegHero["Page"]
-    if not page in allUnitPages:
+    if page not in allUnitPages:
         page = page.encode("raw_unicode_escape").decode()
-        if not page in allUnitPages:
+        if page not in allUnitPages:
             warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
@@ -337,11 +350,12 @@ def parseRawLeg(rawLegHero, allUnitPages):
     hero.season = rawLegHero["LegendaryEffect"]
     return
 
+
 def parseRawDuo(rawDuoHero, allUnitPages):
     page = rawDuoHero["Page"]
-    if not page in allUnitPages:
+    if page not in allUnitPages:
         page = page.encode("raw_unicode_escape").decode()
-        if not page in allUnitPages:
+        if page not in allUnitPages:
             warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
@@ -353,9 +367,9 @@ def parseRawDuo(rawDuoHero, allUnitPages):
 
 def parseRawMythic(rawMythicHero, allUnitPages):
     page = rawMythicHero["Page"]
-    if not page in allUnitPages:
+    if page not in allUnitPages:
         page = page.encode("raw_unicode_escape").decode()
-        if not page in allUnitPages:
+        if page not in allUnitPages:
             warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
@@ -363,11 +377,12 @@ def parseRawMythic(rawMythicHero, allUnitPages):
     hero.season = rawMythicHero["MythicEffect"]
     return
 
+
 def parseRawHarmonized(rawHarmonizedHero, allUnitPages):
     page = rawHarmonizedHero["Page"]
-    if not page in allUnitPages:
+    if page not in allUnitPages:
         page = page.encode("raw_unicode_escape").decode()
-        if not page in allUnitPages:
+        if page not in allUnitPages:
             warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
@@ -375,23 +390,25 @@ def parseRawHarmonized(rawHarmonizedHero, allUnitPages):
     hero.harmonizedSkill = rawHarmonizedHero["HarmonizedSkill"]
     return
 
+
 def parseRawFocus(rawFocus, allUnits):
     heroKey = rawFocus["Unit"]
-    if not heroKey in allUnits:
+    if heroKey not in allUnits:
         warnings.warn(heroKey + " not in units")
         return
     hero = allUnits[heroKey]
     rarity = tryStrToInt(rawFocus["Rarity"])
-    if not rarity in hero.rarities:
+    if rarity not in hero.rarities:
         hero.rarities.append(rarity)
     return
+
 
 def parseRawAvailability(rawHeroAvail, allUnitPages, timeNow):
     # print(rawHeroAvail)
     page = rawHeroAvail["Page"]
-    if not page in allUnitPages:
+    if page not in allUnitPages:
         page = page.encode("raw_unicode_escape").decode()
-        if not page in allUnitPages:
+        if page not in allUnitPages:
             warnings.warn(page + " is not in unit pages, and unicode escape failed")
             return
     hero = allUnitPages[page]
@@ -415,6 +432,7 @@ def parseRawAvailability(rawHeroAvail, allUnitPages, timeNow):
         hero.rarities.append(rarity)
     # print(hero, rarity, startTime, "to", endTime)
     return
+
 
 def finalizeUnitSkills(unit):
     # print(unit, unit.skillReqs)
@@ -446,14 +464,16 @@ def finalizeUnitSkills(unit):
             if slotsr.unlockRarity == maxRarity:
                 slotsr.isMax = True
 
+
 def tryStrToInt(intStr):
     if re.match("(-|)[0-9]+", intStr):
         return int(intStr)
-    elif intStr == "" or intStr == None:
+    elif intStr == "" or intStr is None:
         return 0
     else:
         warnings.warn("Bad intStr submitted to tryStrToInt", stacklevel=2)
         return 0
+
 
 def LoadPoro(pkl_output_file="poro.pkl"):
     with open(pkl_output_file + ".0", "rb") as f:
@@ -505,7 +525,7 @@ def LoadPoro(pkl_output_file="poro.pkl"):
     for skillkey in rawSeals:
         rawSeal = rawSeals[skillkey]
         seal = parseRawSeal(rawSeal, allSkills)
-        if seal != None:
+        if seal is not None:
             allSeals[skillkey] = seal
 
     # isMax for seals
@@ -593,9 +613,9 @@ def LoadPoro(pkl_output_file="poro.pkl"):
         wp = unit.weapon
         mp = unit.move
         for prf in unit.getPrfs():
-            if not wp in prf.weaponPerms:
+            if wp not in prf.weaponPerms:
                 prf.weaponPerms.append(wp)
-            if not mp in prf.movePerms:
+            if mp not in prf.movePerms:
                 prf.movePerms.append(mp)
 
     # returning lists smh leenis so degenerate :alfonsewat:
@@ -604,6 +624,7 @@ def LoadPoro(pkl_output_file="poro.pkl"):
         heroes=list(allUnits.values()),
         seals=list(allSeals.values()),
     )
+
 
 # to test image curling
 def saveDB(pkl_output_file="porodb.pkl"):

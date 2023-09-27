@@ -6,26 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feh', '0008_auto_20200330_1644'),
+        ("feh", "0008_auto_20200330_1644"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='hero',
-            name='categories',
+            model_name="hero",
+            name="categories",
         ),
         migrations.RemoveField(
-            model_name='skill',
-            name='mt',
+            model_name="skill",
+            name="mt",
         ),
         migrations.RemoveField(
-            model_name='skill',
-            name='range',
+            model_name="skill",
+            name="range",
         ),
         migrations.AddField(
-            model_name='hero',
-            name='origin_game',
-            field=models.CharField(default='', max_length=50),
+            model_name="hero",
+            name="origin_game",
+            field=models.CharField(default="", max_length=50),
             preserve_default=False,
         ),
     ]

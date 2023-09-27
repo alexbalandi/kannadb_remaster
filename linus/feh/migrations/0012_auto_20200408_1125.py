@@ -6,20 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feh', '0011_auto_20200408_0829'),
+        ("feh", "0011_auto_20200408_0829"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hero',
-            name='stripped_name',
-            field=models.CharField(default='', max_length=100),
+            model_name="hero",
+            name="stripped_name",
+            field=models.CharField(default="", max_length=100),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='skill',
-            name='stripped_name',
-            field=models.CharField(default='', max_length=100),
+            model_name="skill",
+            name="stripped_name",
+            field=models.CharField(default="", max_length=100),
             preserve_default=False,
         ),
     ]

@@ -1,24 +1,21 @@
-from django.urls import re_path as url
 from django.urls import path
+from django.urls import re_path as url
 from django.views.decorators.cache import cache_page
 from django.views.generic.base import TemplateView
 
 from linus.feh.views import (
-    lucksack_calculator,
-    HeroesList,
     CurlHeroes,
-    SkillsList,
-    MaxOnlySkillsList,
     CurlHeroesDoPhaseBase,
+    HeroesList,
     HeroesListAjax,
-    SkillsListAjaxMax,
+    MaxOnlySkillsList,
+    SkillsList,
     SkillsListAjax,
+    SkillsListAjaxMax,
+    lucksack_calculator,
 )
 
-from .views import (
-    aether_lift_calculator,
-)
-
+from .views import aether_lift_calculator
 
 app_name = "feh"
 urlpatterns = [
@@ -58,9 +55,7 @@ urlpatterns = [
     ),
     path(
         "",
-        view=cache_page(60 * 10)(
-            TemplateView.as_view(template_name="feh/welcome.html")
-        ),
+        view=cache_page(60 * 10)(TemplateView.as_view(template_name="feh/welcome.html")),
         name="home",
     ),
 ]

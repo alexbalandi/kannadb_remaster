@@ -1,4 +1,3 @@
-from linus.feh.sliders import get_hero_stat_sliders, get_skill_stat_sliders
 import sys
 from datetime import date
 
@@ -16,6 +15,7 @@ from linus.feh.models import AVAILABILITY, MOVEMENT_TYPE, WEAPON_TYPE
 from linus.feh.poro import porocurler_v2
 from linus.feh.poro.porocurler_v2 import CurlAll
 from linus.feh.poro.poroparser_v2 import LoadPoro
+from linus.feh.sliders import get_hero_stat_sliders, get_skill_stat_sliders
 
 from . import forms, models
 from .filters import (
@@ -35,7 +35,6 @@ from .filters import (
     get_weapon_permission_filter,
     get_weapon_type_filter,
 )
-
 
 MULTIPLIER_MAX = 2
 
@@ -92,9 +91,7 @@ def Calc(aether, lift, resets, lift_gain=100, aether_max=200, aether_regen=50):
                 multiplier = 2
 
             res.append(
-                ">>>{2}x run. Pay {0}. Get {1} from pots".format(
-                    cost * multiplier, pot * multiplier, multiplier
-                )
+                ">>>{2}x run. Pay {0}. Get {1} from pots".format(cost * multiplier, pot * multiplier, multiplier)
             )
 
             matches_multi[multiplier] += 1
@@ -181,30 +178,16 @@ class LucksackCalculator(FormView):
         ssr_focus = form.cleaned_data.get("five_star_focus_chance_total")
         ssr_pity = form.cleaned_data.get("five_star_pitybreaker_chance_total")
 
-        ssr_f_sc = form.cleaned_data.get(
-            "number_of_other_focus_units_with_the_same_color_as_target"
-        )
-        ssr_f_wc = form.cleaned_data.get(
-            "number_of_other_focus_units_with_different_color_than_target"
-        )
+        ssr_f_sc = form.cleaned_data.get("number_of_other_focus_units_with_the_same_color_as_target")
+        ssr_f_wc = form.cleaned_data.get("number_of_other_focus_units_with_different_color_than_target")
 
-        ssr_n_sc = form.cleaned_data.get(
-            "number_of_five_star_units_with_the_same_color_as_target"
-        )
-        ssr_n_wc = form.cleaned_data.get(
-            "number_of_five_star_units_with_different_color_than_target"
-        )
+        ssr_n_sc = form.cleaned_data.get("number_of_five_star_units_with_the_same_color_as_target")
+        ssr_n_wc = form.cleaned_data.get("number_of_five_star_units_with_different_color_than_target")
 
-        com_n_sc = form.cleaned_data.get(
-            "number_of_four_star_or_lower_units_with_the_same_color_as_target"
-        )
-        com_n_wc = form.cleaned_data.get(
-            "number_of_four_star_or_lower_units_with_different_color_than_target"
-        )
+        com_n_sc = form.cleaned_data.get("number_of_four_star_or_lower_units_with_the_same_color_as_target")
+        com_n_wc = form.cleaned_data.get("number_of_four_star_or_lower_units_with_different_color_than_target")
 
-        already_in_pool = form.cleaned_data.get(
-            "is_target_unit_already_in_summonable_pool"
-        )
+        already_in_pool = form.cleaned_data.get("is_target_unit_already_in_summonable_pool")
 
         total_focus_units = 1 + ssr_f_sc + ssr_f_wc
         total_ssr_units = ssr_n_sc + ssr_n_wc
@@ -376,11 +359,7 @@ class HeroesList(KannadbListBase):
 
 
 def GenerateCurlPassword(phase):
-    key = (
-        23591735139048247645
-        * (phase + 2427342347)
-        * int(date.today().strftime("%Y%m%d"))
-    )
+    key = 23591735139048247645 * (phase + 2427342347) * int(date.today().strftime("%Y%m%d"))
     return key
 
 
@@ -441,12 +420,8 @@ def SkillsListDo(skills):
         skilldata["icons"] = skill.f2p_levels_icons
         skilldata["rarity"] = skill.rarity
         skilldata["release_date"] = dict(
-            display=skill.release_date.strftime("%-d %b %Y")
-            if skill.release_date
-            else "",
-            sortplay=skill.release_date.strftime("%Y-%m-%d")
-            if skill.release_date
-            else "",
+            display=skill.release_date.strftime("%-d %b %Y") if skill.release_date else "",
+            sortplay=skill.release_date.strftime("%Y-%m-%d") if skill.release_date else "",
         )
         skilldata["heroes"] = skill.display_heroes
         skilldata["description"] = skill.description
@@ -518,9 +493,7 @@ class SkillsList(TemplateView):
 
         context["filters"] = []
         if not self.JUST_MAX:
-            context["filters"].append(
-                get_true_false_filter(id="max", title="Max skills only?")
-            )
+            context["filters"].append(get_true_false_filter(id="max", title="Max skills only?"))
 
         context["filters"].extend(
             [

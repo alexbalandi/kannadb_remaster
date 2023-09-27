@@ -1,5 +1,0 @@
-[build]
-nixpacksVersion = "1.14.0"
-[phases.setup]
-#nixPkgs = ["...", "glibc", "curl", "openssl"]
-aptPkgs = ["...", "libcurl4-openssl-dev", "libssl-dev"]   # Install the wget package with apt-get

@@ -4,17 +4,8 @@ from time import strptime
 
 from django.core.management.base import BaseCommand
 
-from linus.feh.management.commands.curl_heroes import (
-    GetPklHeroURLFile,
-    GetPklOutputFile,
-)
-from linus.feh.models import (
-    AVAILABILITY,
-    COLOR,
-    F2P_LEVEL_OVERRIDE,
-    MOVEMENT_TYPE,
-    WEAPON_TYPE,
-)
+from linus.feh.management.commands.curl_heroes import GetPklHeroURLFile, GetPklOutputFile
+from linus.feh.models import AVAILABILITY, COLOR, F2P_LEVEL_OVERRIDE, MOVEMENT_TYPE, WEAPON_TYPE
 from linus.feh.poro.poroimagecurler import GetKannaURLs
 
 from ... import models
@@ -126,9 +117,7 @@ class Command(BaseCommand):
     help = "Import Heroes from porocode."
 
     def handle(self, *args, **options):
-        all_data = GetKannaURLs(
-            GetPklOutputFile(), GetPklHeroURLFile()
-        )
+        all_data = GetKannaURLs(GetPklOutputFile(), GetPklHeroURLFile())
 
         heroes = all_data["heroes"]
 
@@ -259,11 +248,7 @@ class Command(BaseCommand):
                     # srange = skill.range
                     for refine in skill.refines:
                         if refine.desc:
-                            description = (
-                                "{0}\n\n[Original effect before refine]\n{1}".format(
-                                    refine.desc, description
-                                )
-                            )
+                            description = "{0}\n\n[Original effect before refine]\n{1}".format(refine.desc, description)
 
             cleaned_weapon_perms = []
             for weapon_perm in skill.weaponPerms:
@@ -272,9 +257,7 @@ class Command(BaseCommand):
                 else:
                     cleaned_weapon_perms.append(weapon_perm)
 
-            weapon_perms = sorted(
-                list(set([WEAPON_SLOT_MAP[WP_MAP[wp]] for wp in cleaned_weapon_perms]))
-            )
+            weapon_perms = sorted(list(set([WEAPON_SLOT_MAP[WP_MAP[wp]] for wp in cleaned_weapon_perms])))
             movement_perms = sorted(list(set([MV_MAP[mv] for mv in skill.movePerms])))
 
             if not skill_slot:
@@ -324,19 +307,14 @@ class Command(BaseCommand):
                 # if not hero.icon_image:
                 #  raise Exception('Missing image for hero %s (%s)' % (hero.name, hero.title))
                 skill_obj.heroes.append(
-                    "{0}@{1}@{2}@{3}".format(
-                        hero.f2p_level, hero.availability, hero.title, hero.name
-                    )
+                    "{0}@{1}@{2}@{3}".format(hero.f2p_level, hero.availability, hero.title, hero.name)
                 )
                 skill_obj.hero_stripped_names.append(hero.stripped_name)
 
                 skill_obj.f2p_levels.append(hero.f2p_level)
 
                 skill_obj.rarity = min(skill_obj.rarity, actual_rarity)
-                if (
-                    skill_obj.release_date is None
-                    or skill_obj.release_date > hero.release_date
-                ):
+                if skill_obj.release_date is None or skill_obj.release_date > hero.release_date:
                     skill_obj.release_date = hero.release_date
                     skill_obj.book = hero.book
 

@@ -4,6 +4,7 @@
 
 from operator import itemgetter
 
+
 # type              string
 # name              string
 # mt                int
@@ -16,8 +17,8 @@ from operator import itemgetter
 # url               string
 # slot              string
 # evolutions        [Weapon]
-class Weapon(object):   
-    def __init__(self):   
+class Weapon(object):
+    def __init__(self):
         self.type = ""
         self.name = ""
         self.mt = 0
@@ -28,13 +29,15 @@ class Weapon(object):
         self.isRefinable = False
         self.refines = []
         self.url = ""
-        self.slot = 'WEAPON'
+        self.slot = "WEAPON"
         self.evolutions = []
+
     def __str__(self):
-        return self.name    
+        return self.name
+
     def __repr__(self):
-        return self.name    
-   
+        return self.name
+
 
 # feel free to adjust the __str__ and __repr__ kek
 # desc              string
@@ -43,11 +46,13 @@ class Refine(object):
     def __init__(self):
         self.desc = ""
         self.stats = ""
+
     def __str__(self):
-        return " ".join(self.stats)    
+        return " ".join(self.stats)
+
     def __repr__(self):
-        return " ".join(self.stats)      
- 
+        return " ".join(self.stats)
+
 
 # Skill := Assist, Special, Passive
 # name              string
@@ -68,11 +73,13 @@ class Skill(object):
         self.slot = ""
         self.cd = 0
         self.url = ""
+
     def __str__(self):
-        return self.name    
+        return self.name
+
     def __repr__(self):
-        return self.name    
- 
+        return self.name
+
 
 # name              string
 # mod               string
@@ -104,7 +111,7 @@ class Hero(object):
     STAT_SPD = 2
     STAT_DEF = 3
     STAT_RES = 4
-    STAT_TOT = 5    
+    STAT_TOT = 5
 
     def __init__(self):
         self.name = ""
@@ -115,7 +122,7 @@ class Hero(object):
         self.releaseDate = ""
         self.lvl_1_Stats = [[None, None, None] * 6 for i in range(5)]
         self.lvl_40_Stats = [[None, None, None] * 6 for i in range(5)]
-        self.statArray = [None,None,None,None,None,None]
+        self.statArray = [None, None, None, None, None, None]
         self.weaponReqs = []
         self.skillReqs = []
         self.duoSkill = ""
@@ -127,27 +134,38 @@ class Hero(object):
 
     def isDuo(self):
         return "Duo Heroes" in self.categories
+
     def isTT(self):
         return self.heroSrc == "TT"
+
     def isGHB(self):
         return self.heroSrc == "GHB"
 
     def isRed(self):
         return self.getColor() == "Red"
+
     def isBlue(self):
         return self.getColor() == "Blue"
+
     def isGreen(self):
         return self.getColor() == "Green"
+
     def isColorless(self):
         return self.getColor() == "Colorless"
-    
+
     def getColor(self):
         return self.color
 
     def getWeaponType(self):
-        if self.weapon in ['Beast', 'Bow', 'Stave', 'Dagger', 'Dragonstone',]:
-            return '{0} {1}'.format(self.color, self.weapon)
-        return self.weapon        
+        if self.weapon in [
+            "Beast",
+            "Bow",
+            "Stave",
+            "Dagger",
+            "Dragonstone",
+        ]:
+            return "{0} {1}".format(self.color, self.weapon)
+        return self.weapon
 
     def getMove(self):
         return self.move
@@ -166,37 +184,36 @@ class Hero(object):
 
     # return all 5 star weapons
     def getMaxWeapons(self):
-        return [wr[0] for wr in self.weaponReqs if wr[2] == 5]   
+        return [wr[0] for wr in self.weaponReqs if wr[2] == 5]
 
     def getMaxSkills(self):
         return [sr[0] for sr in self.skillReqs if sr[3]]
 
-    def getStatTuple(self, stat, stars = 5, isLvl40 = True):
+    def getStatTuple(self, stat, stars=5, isLvl40=True):
         if isLvl40:
-            return self.lvl_40_Stats[stars-1][stat]
+            return self.lvl_40_Stats[stars - 1][stat]
         else:
-            return self.lvl_1_Stats[stars-1][stat]
+            return self.lvl_1_Stats[stars - 1][stat]
 
     # 0 = bane, 2 = boon
-    def getStat(self, stat, bane_neut_boon=1, stars=5, isLvl40 = True):
+    def getStat(self, stat, bane_neut_boon=1, stars=5, isLvl40=True):
         return self.getStatTuple(stat, stars, isLvl40)[bane_neut_boon]
 
     def getBST(self):
         return self.getStat(self.STAT_TOT)
 
-    def getNeutralStats(self, lvl_40 = True):
+    def getNeutralStats(self, lvl_40=True):
         if lvl_40:
             return [t[1] for t in self.lvl_40_Stats[4]]
         else:
             return [t[1] for t in self.lvl_1_Stats[4]]
-
 
     def getPullableRarities(self):
         return self.rarities
 
     # shitty code but whatever its all shitty anyway lulll
     def getStatOrder(self):
-        statTuples = [(stat, (5 - stat) + 100 * self.getStat(stat, isLvl40 = False)) for stat in range(5)]
+        statTuples = [(stat, (5 - stat) + 100 * self.getStat(stat, isLvl40=False)) for stat in range(5)]
         sortedTuples = sorted(statTuples, key=itemgetter(1), reverse=True)
         return [sortedTuple[0] for sortedTuple in sortedTuples]
 
@@ -207,7 +224,7 @@ class Hero(object):
         if stat < 0 or stat > 5:
             return None
         else:
-            return ["HP", "ATK", "SPD", "DEF", "RES"][stat]                
+            return ["HP", "ATK", "SPD", "DEF", "RES"][stat]
 
     def getStatHelpString(self):
         print("0 => STAT_HP ")
@@ -221,7 +238,7 @@ class Hero(object):
     def getSrc(self):
         return self.heroSrc
 
-    # must be called by the parser 
+    # must be called by the parser
     # before hero is ready for export
     def finalize(self):
         # because leenis hates Flame_Emperor
@@ -231,7 +248,7 @@ class Hero(object):
         # extract neutral stats and weapontype for easy fetching
         self.statArray = [bnb[1] for bnb in self.lvl_40_Stats[4]]
         self.weapon = self.weaponReqs[0][0].type
-        
+
         # categories => color info
         if "Red Heroes" in self.categories:
             self.color = "Red"
@@ -243,7 +260,7 @@ class Hero(object):
             self.color = "Colorless"
         else:
             raise ValueError(self, "has no colour in", self.categories)
-       
+
         # categories => source info
         if "Duo Heroes" in self.categories:
             self.heroSrc = "Duo"
@@ -261,7 +278,7 @@ class Hero(object):
             self.heroSrc = "Special"
         else:
             self.heroSrc = "Normal"
-            
+
         # categories => movement type info
         if "Infantry Heroes" in self.categories:
             self.move = "Infantry"
@@ -275,16 +292,16 @@ class Hero(object):
             raise ValueError("  (!)", self, "has no src type", self.categories)
 
         # add isMax boolean to final weapon/skills
-        
+
         # assume all 5* weaps and their derivatives are max
         for wr in self.weaponReqs:
             if wr[2] == 5:
                 wr[3] = True
-                origWeap = wr[0]                
+                origWeap = wr[0]
                 for newWeap in origWeap.evolutions:
                     nwr = wr[:]
                     nwr[0] = newWeap
-                    self.weaponReqs.append(nwr)                    
+                    self.weaponReqs.append(nwr)
 
         # hack: assume last skill of each slot is final
         allSlots = set([sr[0].slot for sr in self.skillReqs])
@@ -293,7 +310,7 @@ class Hero(object):
             slotSkillReqs[-1][3] = True
 
     def __str__(self):
-        return self.full_name    
+        return self.full_name
 
     def __repr__(self):
-        return self.full_name    
+        return self.full_name

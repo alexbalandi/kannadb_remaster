@@ -1,7 +1,7 @@
+from advanced_filters.admin import AdminAdvancedFiltersMixin
 from django.contrib import admin
 
 from . import models
-from advanced_filters.admin import AdminAdvancedFiltersMixin
 
 
 @admin.register(models.Hero)

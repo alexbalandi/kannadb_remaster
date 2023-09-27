@@ -77,9 +77,7 @@ def GetChances(orbs, summon_no_pity, units_aggregate, memo):
                 chance = ssr_multi * raw_chance
             else:
                 chance = common_multi * raw_chance
-            if orbs >= orb_costs[opens] and (
-                is_same_color or (opens == 0 and remain == 1)
-            ):
+            if orbs >= orb_costs[opens] and (is_same_color or (opens == 0 and remain == 1)):
                 # open this circle.
                 minires = SimCircle(
                     orbs - orb_costs[opens],

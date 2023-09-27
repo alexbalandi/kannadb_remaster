@@ -456,8 +456,6 @@ BOOK_BEGIN_DATES = [
 ]
 
 
-
-
 def upload_to_dir(instance, filename):
     return "heroes_icons/{0}.webp".format(instance.stripped_name.replace(" ", "-"))
 
@@ -520,9 +518,7 @@ class Hero(models.Model):
     # 2
     generation = models.IntegerField("gen")
 
-    harmonized_skill = models.CharField(
-        max_length=2000, blank=True, null=True, default=None
-    )
+    harmonized_skill = models.CharField(max_length=2000, blank=True, null=True, default=None)
 
     rarities = ArrayField(models.IntegerField())
 
@@ -537,9 +533,7 @@ class Hero(models.Model):
 
     def get_max_dragonflower_per_stat(self):
         dragonflowers = 1
-        if self.movement_type == MOVEMENT_TYPE.INFANTRY and self.release_date <= date(
-            day=7, month=2, year=2019
-        ):
+        if self.movement_type == MOVEMENT_TYPE.INFANTRY and self.release_date <= date(day=7, month=2, year=2019):
             dragonflowers = 2
 
         dragonflowers += GENERATION_MAX - self.generation
@@ -691,14 +685,16 @@ class Hero(models.Model):
     def games(self):
         result = []
 
-        for game in self.origin_game.split(','):
-            code = TEXT_TO_GAME_MAP.get(game, '')
-            result.append(dict(
-                code=code,
-                icon=static('images/icons/ICON_{0}.png'.format(code)),
-                human=GAME_READABLE.get(code),
-                title=GAME_READABLE.get(code)
-            ))
+        for game in self.origin_game.split(","):
+            code = TEXT_TO_GAME_MAP.get(game, "")
+            result.append(
+                dict(
+                    code=code,
+                    icon=static("images/icons/ICON_{0}.png".format(code)),
+                    human=GAME_READABLE.get(code),
+                    title=GAME_READABLE.get(code),
+                )
+            )
         return result
 
     @property
@@ -743,9 +739,7 @@ class Hero(models.Model):
 
     @property
     def StatArray(self):
-        return "{0}/{1}/{2}/{3}/{4}".format(
-            self.hp, self.attack, self.speed, self.defense, self.resistance
-        )
+        return "{0}/{1}/{2}/{3}/{4}".format(self.hp, self.attack, self.speed, self.defense, self.resistance)
 
     @property
     def StandardDeviation(self):
@@ -870,9 +864,7 @@ class Skill(models.Model):
     is_max = models.BooleanField()
 
     # GHB, TT, etc
-    availabilities = ArrayField(
-        models.CharField(max_length=15, choices=AVAILABILITY_PAIRS)
-    )
+    availabilities = ArrayField(models.CharField(max_length=15, choices=AVAILABILITY_PAIRS))
 
     # 4: Linus, 5: Leif, etc
     heroes = ArrayField(models.CharField(max_length=200))
@@ -895,13 +887,9 @@ class Skill(models.Model):
 
     f2p_levels = ArrayField(models.CharField(max_length=25, choices=F2P_LEVEL_PAIRS))
 
-    weapon_permissions = ArrayField(
-        models.CharField(max_length=15, choices=WEAPON_TYPE_PAIRS)
-    )
+    weapon_permissions = ArrayField(models.CharField(max_length=15, choices=WEAPON_TYPE_PAIRS))
 
-    movement_permissions = ArrayField(
-        models.CharField(max_length=15, choices=MOVEMENT_TYPE_PAIRS)
-    )
+    movement_permissions = ArrayField(models.CharField(max_length=15, choices=MOVEMENT_TYPE_PAIRS))
 
     # Weapon only
     # mt = models.IntegerField(blank=True, null=True)
@@ -928,10 +916,7 @@ class Skill(models.Model):
 
     @property
     def f2p_levels_icons(self):
-        return [
-            static("images/icons/ICON_{0}.png".format(f2p_level))
-            for f2p_level in self.f2p_levels
-        ]
+        return [static("images/icons/ICON_{0}.png".format(f2p_level)) for f2p_level in self.f2p_levels]
 
     @property
     def weapon_permissions_icons(self):

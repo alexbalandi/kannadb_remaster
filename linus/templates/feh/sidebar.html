@@ -2,51 +2,56 @@
 
 <div class="filters">
   {% for filter in filters %}
-    <span class='filter-section'>
-      {% if filter.title %}
-        <div class='filter-title'>
-          {{ filter.title }}
-        </div>
-      {% endif %}
+  <span class="filter-section">
+    {% if filter.title %}
+    <div class="filter-title">{{ filter.title }}</div>
+    {% endif %}
 
-      <div class='filter-buttons {{ filter.btn_class }}'>
-        {% for content in filter.content %}
-          <button type="button" class="{{ filter.id }}-btn filter-button" data-id="{{ content.0 }}"
-            {% if content.1.2 %}
-              data-tippy-content="{{ content.1.2 }}"
-            {% endif %}
-          >
-            {% if content.1.0 == 'txt' %}
-              {{ content.1.1 }}
-            {% elif content.1.0 == 'img' %}
-              <img height="30pt" src="{{ content.1.1 }}">
-            {% endif %}
-          </button>
-        {% endfor %}
-      </div>
-    </span>
+    <div class="filter-buttons {{ filter.btn_class }}">
+      {% for content in filter.content %}
+      <button
+        type="button"
+        class="{{ filter.id }}-btn filter-button"
+        data-id="{{ content.0 }}"
+        {%
+        if
+        content.1.2
+        %}
+        data-tippy-content="{{ content.1.2 }}"
+        {%
+        endif
+        %}
+      >
+        {% if content.1.0 == 'txt' %} {{ content.1.1 }} {% elif content.1.0 ==
+        'img' %}
+        <img height="30pt" src="{{ content.1.1 }}" />
+        {% endif %}
+      </button>
+      {% endfor %}
+    </div>
+  </span>
   {% endfor %}
 </div>
 
-<div class='sliders'>
-  <div class='filter-title'>
-    Stat
-  </div>
+<div class="sliders">
+  <div class="filter-title">Stat</div>
 
-{% for stat in stats %}
-  <p>
-    {{ stat.title }}: <span id="stat-range-slider-display-{{ stat.title }}"></span>
+  {% for stat in stats %}
+  <div class="stat-section">
+    {{ stat.title }}:
+    <span id="stat-range-slider-display-{{ stat.title }}"></span>
     <div
       class="stat-range-slider-widget"
       data-for="stat-range-slider-display-{{ stat.title }}"
       data-min="{{ stat.min }}"
       data-max="{{ stat.max }}"
-      data-index ="{{ stat.index }}"
+      data-index="{{ stat.index }}"
     ></div>
-  </p>
-{% endfor %}
+  </div>
+  {% endfor %}
 </div>
 
-<small>Data from <a href="https://feheroes.gamepedia.com">Gamepedia</a>.
-Thank you maintainers!</small>
-
+<small
+  >Data from <a href="https://feheroes.gamepedia.com">Gamepedia</a>. Thank you
+  maintainers!</small
+>

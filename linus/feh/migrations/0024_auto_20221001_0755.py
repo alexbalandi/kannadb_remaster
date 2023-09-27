@@ -7,18 +7,51 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('feh', '0023_auto_20220928_1944'),
+        ("feh", "0023_auto_20220928_1944"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='hero',
-            name='availability',
-            field=models.CharField(choices=[('A_STANDARD', 'Standard Pool'), ('A_SPECIAL', 'Special'), ('A_GHB', 'Grand Hero Battle'), ('A_TT', 'Tempest Trials'), ('A_LEGENDARY', 'Legendary'), ('A_MYTHIC', 'Mythic'), ('A_STORY', 'Story'), ('A_DUO', 'Duo'), ('A_HARMONIZED', 'Harmonized'), ('A_ASCENDANT', 'Ascendant'), ('A_REARMED', 'Rearmed')], max_length=15),
+            model_name="hero",
+            name="availability",
+            field=models.CharField(
+                choices=[
+                    ("A_STANDARD", "Standard Pool"),
+                    ("A_SPECIAL", "Special"),
+                    ("A_GHB", "Grand Hero Battle"),
+                    ("A_TT", "Tempest Trials"),
+                    ("A_LEGENDARY", "Legendary"),
+                    ("A_MYTHIC", "Mythic"),
+                    ("A_STORY", "Story"),
+                    ("A_DUO", "Duo"),
+                    ("A_HARMONIZED", "Harmonized"),
+                    ("A_ASCENDANT", "Ascendant"),
+                    ("A_REARMED", "Rearmed"),
+                ],
+                max_length=15,
+            ),
         ),
         migrations.AlterField(
-            model_name='skill',
-            name='availabilities',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('A_STANDARD', 'Standard Pool'), ('A_SPECIAL', 'Special'), ('A_GHB', 'Grand Hero Battle'), ('A_TT', 'Tempest Trials'), ('A_LEGENDARY', 'Legendary'), ('A_MYTHIC', 'Mythic'), ('A_STORY', 'Story'), ('A_DUO', 'Duo'), ('A_HARMONIZED', 'Harmonized'), ('A_ASCENDANT', 'Ascendant'), ('A_REARMED', 'Rearmed')], max_length=15), size=None),
+            model_name="skill",
+            name="availabilities",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    choices=[
+                        ("A_STANDARD", "Standard Pool"),
+                        ("A_SPECIAL", "Special"),
+                        ("A_GHB", "Grand Hero Battle"),
+                        ("A_TT", "Tempest Trials"),
+                        ("A_LEGENDARY", "Legendary"),
+                        ("A_MYTHIC", "Mythic"),
+                        ("A_STORY", "Story"),
+                        ("A_DUO", "Duo"),
+                        ("A_HARMONIZED", "Harmonized"),
+                        ("A_ASCENDANT", "Ascendant"),
+                        ("A_REARMED", "Rearmed"),
+                    ],
+                    max_length=15,
+                ),
+                size=None,
+            ),
         ),
     ]

@@ -20,14 +20,7 @@ class Slider(NamedTuple):
 
 
 def get_f2p_filter(heroes: List[Hero]) -> Filter:
-    f2p_levels = sorted(
-        set(
-            [
-                (hero.f2p_level, ("img", hero.f2p_level_icon, hero.f2p_level_human))
-                for hero in heroes
-            ]
-        )
-    )
+    f2p_levels = sorted(set([(hero.f2p_level, ("img", hero.f2p_level_icon, hero.f2p_level_human)) for hero in heroes]))
     return Filter(
         id="f2p",
         content=f2p_levels,
@@ -144,9 +137,7 @@ def get_season_filter(heroes: List[Hero]) -> Filter:
 
 
 def get_availability_filter(heroes: List[Hero]) -> Filter:
-    availabilities = sorted(
-        set([(hero.availability, ("txt", hero.availability_human)) for hero in heroes])
-    )
+    availabilities = sorted(set([(hero.availability, ("txt", hero.availability_human)) for hero in heroes]))
 
     # Availability
     return Filter(
@@ -161,9 +152,7 @@ def get_origin_games_filter(heroes: List[Hero]) -> Filter:
     origin_games_raw = set()
     for hero in heroes:
         for game in hero.games:
-            origin_games_raw.add(
-                (game['code'], ('img', game['icon'], game['human']))
-            )
+            origin_games_raw.add((game["code"], ("img", game["icon"], game["human"])))
 
     origin_games = sorted(origin_games_raw)
 
@@ -187,9 +176,7 @@ def get_book_filter(heroes: List[Hero]) -> Filter:
 
 
 def get_generation_filter(heroes: List[Hero]) -> Filter:
-    generations = sorted(
-        set([(hero.generation, ("txt", hero.generation_human)) for hero in heroes])
-    )
+    generations = sorted(set([(hero.generation, ("txt", hero.generation_human)) for hero in heroes]))
 
     return Filter(
         id="generation",
@@ -224,9 +211,7 @@ def get_true_false_filter(id: str, title: Optional[str]) -> Filter:
 
 
 def get_skill_slot_filter(skills: List[Skill]) -> Filter:
-    slot_types = sorted(
-        set([(skill.slot, ("img", skill.slot_icon)) for skill in skills])
-    )
+    slot_types = sorted(set([(skill.slot, ("img", skill.slot_icon)) for skill in skills]))
 
     return Filter(
         id="slot",
@@ -237,9 +222,7 @@ def get_skill_slot_filter(skills: List[Skill]) -> Filter:
 
 
 def get_weapon_permission_filter(skills: List[Skill]) -> Filter:
-    weapon_types = sorted(
-        list(set(sum([skill.weapon_permissions for skill in skills], [])))
-    )
+    weapon_types = sorted(list(set(sum([skill.weapon_permissions for skill in skills], []))))
     weapon_types = [
         (
             weapon_type,
@@ -256,9 +239,7 @@ def get_weapon_permission_filter(skills: List[Skill]) -> Filter:
 
 
 def get_movement_permission_filter(skills: List[Skill]) -> Filter:
-    movement_types = sorted(
-        list(set(sum([skill.movement_permissions for skill in skills], [])))
-    )
+    movement_types = sorted(list(set(sum([skill.movement_permissions for skill in skills], []))))
     movement_types = [
         (
             movement_type,

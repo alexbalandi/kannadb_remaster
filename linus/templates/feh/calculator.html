@@ -1,63 +1,58 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% extends "base.html" %} {% load crispy_forms_tags %} {% block title %}AR
+Calculator{% endblock %} {% block content %}
+<h1>AR Max Lift Calculator</h1>
 
-{% block title %}AR Calculator{% endblock %}
-
-{% block content %}
-  <h1>AR Max Lift Calculator</h1>
-
-  <div class='row'>
-    <div class='col-md-4'>
-      <form class="form-horizontal" method="post" action="{% url 'feh:arcalc' %}">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="control-group">
-          <div class="controls">
-            <button type="submit" class="btn">Go!</button>
-          </div>
+<div class="row">
+  <div class="col-md-4">
+    <form class="form-horizontal" method="post" action="{% url 'feh:arcalc' %}">
+      {% csrf_token %} {{ form|crispy }}
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn">Go!</button>
         </div>
-      </form>
-    </div>
-    <div class='col-md-8'>
-      {% if res %}
-        <table class="table table-striped">
-          <tbody>
-            <tr>
-              <td>Max Lift</td>
-              <td>{{ res.lift }}</td>
-            </tr>
-            <tr>
-              <td>Remaining Aether</td>
-              <td>{{ res.aether }}</td>
-            </tr>
-            <tr>
-              <td>Total matches</td>
-              <td>{{ res.matches }}</td>
-            </tr>
-            {% for match in res.breakdown %}
-              <tr>
-                <td>Number of {{ match.multiplier }}x matches</td>
-                <td>{{ match.num }}</td>
-              </tr>
-            {% endfor %}
-            <tr>
-              <td>Max pots missed<br/>(excluding last match, assuming all runs are 1x multiplier)</td>
-              <td>{{ res.can_miss }}</td>
-            </tr>
-          </tbody>
-        </table>
-      {% endif %}
-    </div>
+      </div>
+    </form>
   </div>
+  <div class="col-md-8">
+    {% if res %}
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <td>Max Lift</td>
+          <td>{{ res.lift }}</td>
+        </tr>
+        <tr>
+          <td>Remaining Aether</td>
+          <td>{{ res.aether }}</td>
+        </tr>
+        <tr>
+          <td>Total matches</td>
+          <td>{{ res.matches }}</td>
+        </tr>
+        {% for match in res.breakdown %}
+        <tr>
+          <td>Number of {{ match.multiplier }}x matches</td>
+          <td>{{ match.num }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td>
+            Max pots missed<br />(excluding last match, assuming all runs are 1x
+            multiplier)
+          </td>
+          <td>{{ res.can_miss }}</td>
+        </tr>
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</div>
 
-  <p>
-  <div class="card card-body bg-light">
+<div class="card card-body bg-light">
   {% if res %}
   <pre><code>Full output log:
 
 {{ res.log }}</code></pre>
   {% endif %}
-  </div>
-  </p>
+</div>
 {% endblock %}
-

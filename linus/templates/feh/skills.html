@@ -1,69 +1,54 @@
-{% extends "feh/kannadb_base.html" %}
+{% extends "feh/kannadb_base.html" %} {% load static %} {% block title %}KannaDB
+FEH Skills List Search and Filter{% endblock %} {% block javascript %} {{
+block.super }}
+<script>
+  SKILLS_AJAX_URL = "{% url ajax_url_name %}";
+</script>
+<script src="{% static 'js/skills.js' %}"></script>
+{% endblock %} {% block kannadbsidebar %} {% include "feh/sidebar.html" %} {%
+endblock %} {% block kannadbmain %}
 
-{% load static %}
+<h3>KannaDB FEH Skills</h3>
 
-{% block title %}KannaDB FEH Skills List Search and Filter{% endblock %}
-
-{% block javascript %}
-  {{ block.super }}
-  <script>
-    SKILLS_AJAX_URL = "{% url ajax_url_name %}";
-  </script>
-  <script src="{% static 'js/skills.js' %}"></script>
-{% endblock %}
-
-{% block kannadbsidebar %}
-  {% include "feh/sidebar.html" %}
-{% endblock %}
-
-{% block kannadbmain %}
-
-  <h3>KannaDB FEH Skills</h3>
-
-  <div class="toggles-container">
-    <div class="toggles-title">
-      Toggle column:
-    </div>
-    <div class="toggles">
-      <a class="toggle-vis" data-column="1">Name</a>
-      <a class="toggle-vis" data-column="2">Slot</a>
-      <a class="toggle-vis" data-column="3">SP Cost</a>
-      <a class="toggle-vis" data-column="4">F2P</a>
-      <a class="toggle-vis" data-column="5">Rarity</a>
-      <a class="toggle-vis" data-column="6">Release Date</a>
-      <a class="toggle-vis" data-column="7">Found On</a>
-      <a class="toggle-vis" data-column="8">Description</a>
-      <a class="toggle-vis" data-column="10">Is Prf</a>
-      <a class="toggle-vis" data-column="13">Book</a>
-    </div>
+<div class="toggles-container">
+  <div class="toggles-title">Toggle column:</div>
+  <div class="toggles">
+    <a class="toggle-vis" data-column="1">Name</a>
+    <a class="toggle-vis" data-column="2">Slot</a>
+    <a class="toggle-vis" data-column="3">SP Cost</a>
+    <a class="toggle-vis" data-column="4">F2P</a>
+    <a class="toggle-vis" data-column="5">Rarity</a>
+    <a class="toggle-vis" data-column="6">Release Date</a>
+    <a class="toggle-vis" data-column="7">Found On</a>
+    <a class="toggle-vis" data-column="8">Description</a>
+    <a class="toggle-vis" data-column="10">Is Prf</a>
+    <a class="toggle-vis" data-column="13">Book</a>
   </div>
+</div>
 
-  <table id='heroes-table' class='table table-striped' width="100%">
-    <thead>
-      <tr>
-        <td class='detail-header'></td>
-        <td>Name</td>
-        <td>Slot</td>
-        <td>Cost</td>
-        <td>F2P</td>
-        <td>Rarity</td>
-        <td>Release</td>
-        <td>Found on</td>
-        <td>Desc</td>
-        <td>Max</td>
+<table id="heroes-table" class="table table-striped" width="100%">
+  <thead>
+    <tr>
+      <td class="detail-header"></td>
+      <td>Name</td>
+      <td>Slot</td>
+      <td>Cost</td>
+      <td>F2P</td>
+      <td>Rarity</td>
+      <td>Release</td>
+      <td>Found on</td>
+      <td>Desc</td>
+      <td>Max</td>
 
-        <td>Prf</td>
-        <td>F2p</td>
-        <td>Slot</td>
-        <td>Book</td>
-        <td>Stripped Name</td>
-        <td>Heroes Stripped Names</td>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+      <td>Prf</td>
+      <td>F2p</td>
+      <td>Slot</td>
+      <td>Book</td>
+      <td>Stripped Name</td>
+      <td>Heroes Stripped Names</td>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
 {% endblock %}
-
-

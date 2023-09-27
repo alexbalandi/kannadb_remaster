@@ -30,8 +30,7 @@ def get_hero_stat_sliders(heroes: List[Hero]) -> List[Slider]:
         ],
         [
             "res",
-            [hero.resistance for hero in heroes]
-            + [hero.max_stats[4] for hero in heroes],
+            [hero.resistance for hero in heroes] + [hero.max_stats[4] for hero in heroes],
         ],
         ["bst", [hero.bst for hero in heroes] + [hero.max_bst for hero in heroes]],
     ]
