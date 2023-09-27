@@ -1,91 +1,106 @@
-{% extends "feh/kannadb_base.html" %} {% load static %} {% block title %}KannaDB
-FEH Heroes List Search and Filter{% endblock %} {% block javascript %} {{
-block.super }}
-<script src="{% static 'js/heroes_2.js' %}"></script>
-{% endblock %} {% block kannadbsidebar %} {% include "feh/sidebar.html" %} {%
-endblock %} {% block kannadbmain %}
+{% extends "feh/kannadb_base.html" %}
 
-<h3>KannaDB FEH Heroes</h3>
+{% load static %}
 
-<div class="toggles-container">
-  <div class="toggles-title">Toggle column:</div>
-  <div class="toggles">
-    <a class="toggle-vis" data-column="0">Name</a>
-    <a class="toggle-vis" data-column="1">F2P</a>
-    <a class="toggle-vis" data-column="2">Weapon</a>
-    <a class="toggle-vis" data-column="3">Movement</a>
-    <a class="toggle-vis" data-column="22">Generation</a>
-    <a class="toggle-vis" data-column="23">Release Date</a>
-    <a class="toggle-vis" data-column="27">Book</a>
-    <a class="toggle-vis" data-column="30">Skills</a>
-    <a class="toggle-vis" data-column="31">Game</a>
-    <a class="toggle-vis" data-column="33">Gender</a>
-    <a class="toggle-vis" data-column="34">Is Dancer</a>
-    <a class="toggle-vis" data-column="35">MinMax Rating</a>
-    <a class="toggle-vis" data-column="36">Source</a>
-    <a class="toggle-vis" data-column="37">Resplendent</a>
-    <a class="toggle-vis" data-column="38">Season</a>
-    <a class="toggle-vis" data-column="39">Duo/Harmo Skill</a>
-    <a class="toggle-vis" data-column="40">Artist</a>
-    <a class="toggle-vis" data-column="42">Dragonflowers</a>
+{% block title %}KannaDB FEH Heroes List Search and Filter{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script src="{% static 'js/heroes_2.js' %}"></script>
+{% endblock %}
+
+{% block kannadbsidebar %}
+  {% include "feh/sidebar.html" %}
+{% endblock %}
+
+{% block kannadbmain %}
+
+  <h3>KannaDB FEH Heroes</h3>
+
+  <div class="toggles-container">
+    <div class="toggles-title">
+      Toggle column:
+    </div>
+    <div class="toggles">
+      <a class="toggle-vis" data-column="0">Name</a>
+      <a class="toggle-vis" data-column="1">F2P</a>
+      <a class="toggle-vis" data-column="2">Weapon</a>
+      <a class="toggle-vis" data-column="3">Movement</a>
+      <a class="toggle-vis" data-column="22">Generation</a>
+      <a class="toggle-vis" data-column="23">Release Date</a>
+      <a class="toggle-vis" data-column="27">Book</a>
+      <a class="toggle-vis" data-column="30">Skills</a>
+      <a class="toggle-vis" data-column="31">Game</a>
+      <a class="toggle-vis" data-column="33">Gender</a>
+      <a class="toggle-vis" data-column="34">Is Dancer</a>
+      <a class="toggle-vis" data-column="35">MinMax Rating</a>
+      <a class="toggle-vis" data-column="36">Source</a>
+      <a class="toggle-vis" data-column="37">Resplendent</a>
+      <a class="toggle-vis" data-column="38">Season</a>
+      <a class="toggle-vis" data-column="39">Duo/Harmo Skill</a>
+      <a class="toggle-vis" data-column="40">Artist</a>
+      <a class="toggle-vis" data-column="42">Dragonflowers</a>
+    </div>
   </div>
-</div>
 
-<table id="heroes-table" class="table table-striped" width="100%">
-  <thead>
-    <tr>
-      <td>Name</td>
-      <td><small>F2P</small></td>
-      <td>Wp</td>
-      <td>Mv</td>
-      <td><small>HP</small></td>
-      <td><small>Atk</small></td>
-      <td><small>Spd</small></td>
-      <td><small>Def</small></td>
-      <td><small>Res</small></td>
-      <td><small>BST</small></td>
+  <table id='heroes-table' class='table table-striped' width="100%">
+    <thead>
+      <tr>
+        <td>Name</td>
+        <td><small>F2P</small></td>
+        <td>Wp</td>
+        <td>Mv</td>
+        <td><small>HP</small></td>
+        <td><small>Atk</small></td>
+        <td><small>Spd</small></td>
+        <td><small>Def</small></td>
+        <td><small>Res</small></td>
+        <td><small>BST</small></td>
 
-      <td><small>HP</small></td>
-      <td><small>Atk</small></td>
-      <td><small>Spd</small></td>
-      <td><small>Def</small></td>
-      <td><small>Res</small></td>
-      <td><small>BST</small></td>
+        <td><small>HP</small></td>
+        <td><small>Atk</small></td>
+        <td><small>Spd</small></td>
+        <td><small>Def</small></td>
+        <td><small>Res</small></td>
+        <td><small>BST</small></td>
 
-      <td><small>HP</small></td>
-      <td><small>Atk</small></td>
-      <td><small>Spd</small></td>
-      <td><small>Def</small></td>
-      <td><small>Res</small></td>
-      <td><small>BST</small></td>
+        <td><small>HP</small></td>
+        <td><small>Atk</small></td>
+        <td><small>Spd</small></td>
+        <td><small>Def</small></td>
+        <td><small>Res</small></td>
+        <td><small>BST</small></td>
 
-      <td>Gen</td>
-      <td>Release</td>
-      <td>Weapon Type</td>
-      <td>Movement Type</td>
+        <td>Gen</td>
+        <td>Release</td>
+        <td>Weapon Type</td>
+        <td>Movement Type</td>
 
-      <td>F2P</td>
-      <td>Book</td>
-      <td>Generation</td>
-      <td>Availability</td>
-      <td>Skills</td>
-      <td>Game</td>
-      <td>Stripped Name</td>
-      <td>Gender</td>
-      <td>Dancer</td>
-      <td>MinMax</td>
+        <td>F2P</td>
+        <td>Book</td>
+        <td>Generation</td>
+        <td>Availability</td>
+        <td>Skills</td>
+        <td>Game</td>
+        <td>Stripped Name</td>
+        <td>Gender</td>
+        <td>Dancer</td>
+        <td>MinMax</td>
 
-      <td>Source</td>
-      <td>Resplendent</td>
-      <td>Season</td>
-      <td>Harmonized Skill</td>
-      <td>Artist</td>
+        <td>Source</td>
+        <td>Resplendent</td>
+        <td>Season</td>
+        <td>Harmonized Skill</td>
+        <td>Artist</td>
 
-      <td>Alias</td>
-      <td>Dragonflowers</td>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+        <td>Alias</td>
+        <td>Dragonflowers</td>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 
 {% endblock %}
+
+

@@ -1,40 +1,42 @@
-{% extends "base.html" %} {% load crispy_forms_tags %} {% block title %}Lucksack
-Calculator{% endblock %} {% block content %}
-<h1>HOW LUCKSACK ARE YOU?</h1>
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
 
-<div class="row">
-  <div class="col-md-4">
-    <form
-      class="form-horizontal"
-      method="post"
-      action="{% url 'feh:lucksackcalc' %}"
-    >
-      {% csrf_token %} {{ form|crispy }}
-      <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn">Go!</button>
+{% block title %}Lucksack Calculator{% endblock %}
+
+{% block content %}
+  <h1>HOW LUCKSACK ARE YOU?</h1>
+
+  <div class='row'>
+    <div class='col-md-4'>
+      <form class="form-horizontal" method="post" action="{% url 'feh:lucksackcalc' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn">Go!</button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
+    <div class='col-md-8'>
+      {% if res %}
+        <table class="table table-striped">
+          <tbody>
+            <tr>
+              <td>Number of units</td>
+              <td>Chance</td>
+            </tr>
+            {% for i in res %}
+              <tr>
+                <td>{{ i.0 }}</td>
+                <td>{{ i.1 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    </div>
   </div>
-  <div class="col-md-8">
-    {% if res %}
-    <table class="table table-striped">
-      <tbody>
-        <tr>
-          <td>Number of units</td>
-          <td>Chance</td>
-        </tr>
-        {% for i in res %}
-        <tr>
-          <td>{{ i.0 }}</td>
-          <td>{{ i.1 }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-  </div>
-</div>
 
 {% endblock %}
+

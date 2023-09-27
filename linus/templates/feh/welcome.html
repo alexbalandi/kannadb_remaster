@@ -1,40 +1,34 @@
-{% extends "base.html" %} {% load static %} {% block title %}KannaDB FEH
-Database{% endblock %} {% block content %}
-<h1 class="text-center">
-  KannaDB: Fire Emblem Heroes (FEH) Database, Search, and Filter
-</h1>
-<p class="text-center">
-  <img height="40pt" src="{% static 'images/icons/kannadb.png' %}" />
-  Moshi moshi, this is Kanna speaking.
-  <img height="40pt" src="{% static 'images/icons/kannadb.png' %}" />
-</p>
+{% extends "base.html" %}
 
-<a class="btn btn-primary btn-block" href='{% url "feh:heroes_list" %}'>
-  Heroes DB</a
->
-<a class="btn btn-success btn-block" href='{% url "feh:skills_list" %}'>
-  Skills DB (Max Skills Only)</a
->
-<a class="btn btn-warning btn-block" href='{% url "feh:arcalc" %}'>
-  AR Lift Calculator</a
->
-<a class="btn btn-danger btn-block" href='{% url "feh:skills_list_all" %}'>
-  Skills DB (All Skills)</a
->
+{% load static %}
 
-<a
-  class="btn btn-info btn-block"
-  href="http://www.arcticsilverfox.com/score_calc/"
->
-  Arena Score Calculator (by ASFox)
-</a>
+{% block title %}KannaDB FEH Database{% endblock %}
 
-<a
-  class="btn btn-info btn-block"
-  href="http://www.arcticsilverfox.com/feh_sim/"
->
-  FEH Mass Duel Simulator (by ASFox)
-</a>
+{% block content %}
+  <h1 class='text-center'>KannaDB: Fire Emblem Heroes (FEH) Database, Search, and Filter</h1>
+  <p class='text-center'>
+    <img height="40pt" src="{% static 'images/icons/kannadb.png' %}">
+    Moshi moshi, this is Kanna speaking.
+    <img height="40pt" src="{% static 'images/icons/kannadb.png' %}">
+  </p>
 
-<p>Made by LinusMain and Pororo. Data sourced from Gamepedia.</p>
+  <a class='btn btn-primary btn-block' href='{% url "feh:heroes_list" %}'>
+    Heroes DB</a>
+  <a class='btn btn-success btn-block' href='{% url "feh:skills_list" %}'>
+    Skills DB (Max Skills Only)</a>
+  <a class='btn btn-warning btn-block' href='{% url "feh:arcalc" %}'>
+    AR Lift Calculator</a>
+  <a class='btn btn-danger btn-block' href='{% url "feh:skills_list_all" %}'>
+    Skills DB (All Skills)</a>
+
+  <a class='btn btn-info btn-block' href='http://www.arcticsilverfox.com/score_calc/'>
+    Arena Score Calculator (by ASFox)
+  </a>
+
+  <a class='btn btn-info btn-block' href='http://www.arcticsilverfox.com/feh_sim/'>
+    FEH Mass Duel Simulator (by ASFox)
+  </a>
+
+  <p>Made by LinusMain and Pororo. Data sourced from Gamepedia.</p>
 {% endblock %}
+
