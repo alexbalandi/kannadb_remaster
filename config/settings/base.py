@@ -215,7 +215,11 @@ TEMPLATES = [
     },
 ]
 # http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
+# https://pypi.org/project/crispy-bootstrap4/ - newer one
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 
 # FIXTURES
 # ------------------------------------------------------------------------------
