@@ -547,7 +547,7 @@ class Hero(models.Model):
         },
         "title": {"Bride of Rime": "beccy", "Brave Warrior": "bector chet god"},
         "harmonized_skill": {True: "chet"},
-        "special_case": {("Robin", "Male"): "moro"},
+        ("name", "gender"): {("Robin", "Male"): "moro"},
     }
 
     # icon_image = models.ImageField(upload_to=upload_to_dir,
@@ -593,14 +593,15 @@ class Hero(models.Model):
     def alias(self):
         aliases = []
 
-        for key, value_dict in self.alias_dict.items():
-            if key == "special_case":
-                for (name, gender), alias_value in value_dict.items():
-                    if self.name == name and self.gender == gender:
-                        aliases.append(alias_value)
+        for key, conditional_alias_dict in self.alias_dict.items():
+            # If the key is a tuple, construct a tuple key based on the attributes of the object
+            if isinstance(key, tuple):
+                key = tuple(getattr(self, attr) for attr in key)
             else:
-                if getattr(self, key) in value_dict:
-                    aliases.append(value_dict[getattr(self, key)])
+                key = getattr(self, key)
+
+            if key in conditional_alias_dict:
+                aliases.append(conditional_alias_dict[key])
 
         return " ".join(aliases)
 
