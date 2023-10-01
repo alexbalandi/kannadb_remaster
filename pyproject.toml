@@ -123,6 +123,7 @@ werkzeug = "^2.3.7"
 whitenoise = "^6.5.0"
 wrapt = "^1.15.0"
 zipp = "^3.17.0"
+crispy-bootstrap4 = "^2022.1"
 
 
 [build-system]

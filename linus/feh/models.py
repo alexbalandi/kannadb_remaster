@@ -461,7 +461,6 @@ def upload_to_dir(instance, filename):
 
 
 class Hero(models.Model):
-
     # Linus
     name = models.CharField(max_length=200)
 
@@ -527,6 +526,30 @@ class Hero(models.Model):
     # ['+', '', '-', '-', '+']
     boonbanes = ArrayField(models.CharField(max_length=3, blank=True))
 
+    alias_dict = {  # Easter eggs
+        "artist": {"アマガイタロー": "nino abi priestess abby aby abigail"},
+        "name": {
+            "Faye": "alm",
+            "Cordelia": "leo caloried f2p",
+            "Caeda": "misaka",
+            "Oliver": "pororo poron",
+            "Linus": "best unit in the game linoes",
+            "Naga": "useless",
+            "Sothis": "useless",
+            "Nowi": "soul",
+            "Corrin": "dum",
+            "Sharena": "fire emblem heroes",
+            "Ingrid": "bulu",
+            "Gunnthrá": "rudar rudraksha",
+            "Felicia": "richy",
+            "Black Knight": "steelux steely",
+            "Edelgard": "karpo",
+        },
+        "title": {"Bride of Rime": "beccy", "Brave Warrior": "bector chet god"},
+        "harmonized_skill": {True: "chet"},
+        ("name", "gender"): {("Robin", "Male"): "moro"},
+    }
+
     # icon_image = models.ImageField(upload_to=upload_to_dir,
     #                               blank=True,
     #                               null=True,)
@@ -570,62 +593,15 @@ class Hero(models.Model):
     def alias(self):
         aliases = []
 
-        if self.artist == "アマガイタロー":
-            aliases.append("nino abi priestess abby aby abigail")
+        for key, conditional_alias_dict in self.alias_dict.items():
+            # If the key is a tuple, construct a tuple key based on the attributes of the object
+            if isinstance(key, tuple):
+                key = tuple(getattr(self, attr) for attr in key)
+            else:
+                key = getattr(self, key)
 
-        if self.name == "Faye":
-            aliases.append("alm")
-
-        if self.name == "Cordelia":
-            aliases.append("leo caloried f2p")
-
-        if self.name == "Caeda":
-            aliases.append("misaka")
-
-        if self.name == "Oliver":
-            aliases.append("pororo poron")
-
-        if self.name == "Linus":
-            aliases.append("best unit in the game linoes")
-
-        if self.name in ["Naga", "Sothis"]:
-            aliases.append("useless")
-
-        if self.name == "Nowi":
-            aliases.append("soul")
-
-        if self.title == "Bride of Rime":
-            aliases.append("beccy")
-
-        if self.title == "Brave Warrior":
-            aliases.append("bector chet god")
-
-        if self.harmonized_skill:
-            aliases.append("chet")
-
-        if self.name == "Corrin":
-            aliases.append("dum")
-
-        if self.name == "Sharena":
-            aliases.append("fire emblem heroes")
-
-        if self.name == "Robin" and self.gender == "Male":
-            aliases.append("moro")
-
-        if self.name == "Ingrid":
-            aliases.append("bulu")
-
-        if self.name == "Gunnthrá":
-            aliases.append("rudar rudraksha")
-
-        if self.name == "Felicia":
-            aliases.append("richy")
-
-        if self.name == "Black Knight":
-            aliases.append("steelux steely")
-
-        if self.name == "Edelgard":
-            aliases.append("karpo")
+            if key in conditional_alias_dict:
+                aliases.append(conditional_alias_dict[key])
 
         return " ".join(aliases)
 
@@ -633,7 +609,7 @@ class Hero(models.Model):
     def max_stats(self):
         neutral = self.get_neutral_max_stats()
         res = []
-        for (stat, boonbane) in zip(neutral, self.boonbanes):
+        for stat, boonbane in zip(neutral, self.boonbanes):
             addon = 0
             if boonbane == "+":
                 addon += 1
@@ -842,7 +818,6 @@ class Hero(models.Model):
 
 
 class Skill(models.Model):
-
     # Basilikos
     name = models.CharField(max_length=200)
 
