@@ -164,6 +164,9 @@ def parseRawUnit(rawUnit):
     if "rearmed" in properties:
         h.isRearmed = True
         h.heroSrc = "Rearmed"
+    if "ascendant" in properties or "ascended" in properties:  # TODO : I'm lazy, need to check which it is
+        h.isAscendant = True
+        h.heroSrc = "Ascendant"
     if "refresher" in properties:
         h.isDancer = True
     if "tempest" in properties:
