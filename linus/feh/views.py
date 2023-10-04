@@ -245,7 +245,7 @@ def HeroesListAjax(request):
             icon=hero.availability_icon,
             human=hero.availability_human,
             url=hero.gamepedia_url,
-            hero_icon_url=hero.icon_image.url,
+            # hero_icon_url=hero.icon_image.url, #TODO: more work than seems ot get it back
         )
         herodata["f2p_level"] = dict(
             name=hero.f2p_level,
