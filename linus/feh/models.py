@@ -549,11 +549,11 @@ class Hero(models.Model):
     # ['+', '', '-', '-', '+']
     boonbanes = ArrayField(models.CharField(max_length=3, blank=True))
 
-    icon_image = models.ImageField(
-        upload_to=upload_to_dir,
-        blank=True,
-        null=True,
-    )
+    # icon_image = models.ImageField(
+    #     upload_to=upload_to_dir,
+    #     blank=True,
+    #     null=True,
+    # )
 
     def get_max_dragonflower_per_stat(self):
         dragonflowers = 1
