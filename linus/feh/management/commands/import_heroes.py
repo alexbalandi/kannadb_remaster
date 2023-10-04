@@ -187,7 +187,7 @@ class Command(BaseCommand):
                         season=hero.season,
                         harmonized_skill=hero.harmonizedSkill or hero.duoSkill or None,
                         artist=hero.artist,
-                        icon_image=hero.icon_image,
+                        # icon_image=hero.icon_image,
                     ),
                     hero,
                 )
