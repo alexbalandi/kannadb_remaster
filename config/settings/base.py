@@ -38,6 +38,7 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 DATABASES = {
     "default": env.db("DATABASE_URL", default="postgres://linus:linus@localhost/linus"),
 }

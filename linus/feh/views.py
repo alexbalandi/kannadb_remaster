@@ -172,7 +172,6 @@ class LucksackCalculator(FormView):
         return context
 
     def form_valid(self, form):
-
         orbs = form.cleaned_data.get("orbs")
 
         ssr_focus = form.cleaned_data.get("five_star_focus_chance_total")
@@ -246,8 +245,8 @@ def HeroesListAjax(request):
             icon=hero.availability_icon,
             human=hero.availability_human,
             url=hero.gamepedia_url,
+            hero_icon_url=hero.icon_image.url,
         )
-        # hero_icon_url=hero.icon_image.url)
         herodata["f2p_level"] = dict(
             name=hero.f2p_level,
             icon=hero.f2p_level_icon,
