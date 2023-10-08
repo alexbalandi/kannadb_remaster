@@ -4,10 +4,10 @@ from django.contrib import admin
 from django.urls import include, path
 from django.urls import re_path as url
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("", RedirectView.as_view(url="/feh/"), name="root-redirect-to-feh"),
     # path(
     #    "about/",
     #    TemplateView.as_view(template_name="pages/about.html"),
