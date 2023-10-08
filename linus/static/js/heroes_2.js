@@ -1,16 +1,16 @@
 $(document).ready(function () {
   var filters = [
-    ["weapon-type", 24],
-    ["movement-type", 25],
-    ["f2p", 26],
-    ["book", 27],
-    ["generation", 28],
-    ["availability", 29],
-    ["origin_games", 31, true], // true = search inside the string
-    ["gender", 33],
-    ["dancer", 34],
-    ["resplendent", 37],
-    ["season", 38],
+    ["weapon-type", 24, false], // false = OR filtering, true = AND filtering
+    ["movement-type", 25, false],
+    ["f2p", 26, false],
+    ["book", 27, false],
+    ["generation", 28, false],
+    ["availability", 29, false],
+    ["origin_games", 31, false],
+    ["gender", 33, false],
+    ["dancer", 34, false],
+    ["resplendent", 37, false],
+    ["season", 38, false],
   ];
   var column_visibility = {};
   column_visibility.normal = [4, 5, 6, 7, 8, 9];
@@ -52,6 +52,7 @@ $(document).ready(function () {
 
       if (alltypes.size) {
         if (is_search_in) {
+          // AND filtering
           for (var testtype of alltypes) {
             var tmpdata = data[filters[i][1]];
             if (!tmpdata.includes(testtype)) {
@@ -60,6 +61,7 @@ $(document).ready(function () {
           }
         } else {
           if (!alltypes.has(data[filters[i][1]])) {
+            // OR filtering
             return false;
           }
         }

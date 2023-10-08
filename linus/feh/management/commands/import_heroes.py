@@ -159,7 +159,6 @@ class Command(BaseCommand):
       else:
         image_field_data = None
       """
-
             hero_objs.append(
                 (
                     models.Hero(
@@ -188,7 +187,7 @@ class Command(BaseCommand):
                         season=hero.season,
                         harmonized_skill=hero.harmonizedSkill or hero.duoSkill or None,
                         artist=hero.artist,
-                        # icon_image=image_field_data,
+                        # icon_image=hero.icon_image,
                     ),
                     hero,
                 )

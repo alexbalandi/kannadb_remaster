@@ -1,6 +1,9 @@
 {% load static i18n %}<!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" href="{% static 'css/dark_mode_button.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.66/darkreader.min.js"></script>
+    <script src="{% static 'js/dark_reader.js' %}"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TE330C8ZDZ"></script>
     <script>
@@ -12,7 +15,7 @@
     </script>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Linus Stuffs{% endblock title %}</title>
+    <title>{% block title %}KannaDB{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -21,38 +24,37 @@
     <!--[if lt IE 9]>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
     <![endif]-->
+  </head>
 
+  <body>
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
 
     {% block css %}
 
     <!-- Latest compiled and minified Bootstrap 4.1.1 CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-
     {% endblock %}
-  </head>
-
-  <body>
     {% block overridecontent %}
       <div class="mb-1">
         <nav class="navbar navbar-expand-md navbar-light bg-light navbar-top-main">
           <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'home' %}">Linus Stuffs</a>
+          <!-- <a class="navbar-brand" href="{% url 'home' %}">Linus Stuffs</a> -->
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
+              <!-- <li class="nav-item active">
                 <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+              </li> -->
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'feh:home' %}">KannaDB</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'feh:arcalc' %}">AR Calculator</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'feh:home' %}">KannaDB</a>
-              </li>
             </ul>
+            <button id="darkModeToggle" class="dark-mode-btn btn btn-sm">Toggle Dark Mode</button>
           </div>
         </nav>
 

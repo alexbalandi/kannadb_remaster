@@ -1,0 +1,16 @@
+/* Default appearance (Light Mode) */
+.dark-mode-btn {
+  background-color: #4b94d4;
+  border: none;
+  color: #2a2222;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease;
+  margin-left: auto;
+}
+
+.dark-mode-btn:hover {
+  background-color: #555;
+}

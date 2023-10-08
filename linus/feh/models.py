@@ -461,6 +461,29 @@ def upload_to_dir(instance, filename):
 
 
 class Hero(models.Model):
+    alias_dict = {  # Easter eggs
+        "artist": {"アマガイタロー": "nino abi priestess abby aby abigail"},
+        "name": {
+            "Faye": "alm",
+            "Cordelia": "leo caloried f2p",
+            "Caeda": "misaka",
+            "Oliver": "pororo poron",
+            "Linus": "best unit in the game linoes",
+            "Naga": "useless",
+            "Sothis": "useless",
+            "Nowi": "soul",
+            "Corrin": "dum",
+            "Sharena": "fire emblem heroes",
+            "Ingrid": "bulu",
+            "Gunnthrá": "rudar rudraksha",
+            "Felicia": "richy",
+            "Black Knight": "steelux steely",
+            "Edelgard": "karpo",
+        },
+        "title": {"Bride of Rime": "beccy", "Brave Warrior": "bector chet god"},
+        "harmonized_skill": {True: "chet"},
+        ("name", "gender"): {("Robin", "Male"): "moro"},
+    }
     # Linus
     name = models.CharField(max_length=200)
 
@@ -492,12 +515,12 @@ class Hero(models.Model):
     # for leg, mythics
     season = models.CharField(max_length=15, blank=True)
 
-    hp = models.IntegerField()
-    attack = models.IntegerField("atk")
-    speed = models.IntegerField("spd")
-    defense = models.IntegerField("def")
-    resistance = models.IntegerField("res")
-    bst = models.IntegerField("BST")
+    hp = models.PositiveSmallIntegerField()
+    attack = models.PositiveSmallIntegerField("atk")
+    speed = models.PositiveSmallIntegerField("spd")
+    defense = models.PositiveSmallIntegerField("def")
+    resistance = models.PositiveSmallIntegerField("res")
+    bst = models.PositiveSmallIntegerField("BST")
 
     release_date = models.DateField()
 
@@ -512,47 +535,25 @@ class Hero(models.Model):
     # All the following are auto generated
 
     # 2
-    book = models.IntegerField()
+    book = models.PositiveSmallIntegerField()
 
     # 2
-    generation = models.IntegerField("gen")
+    generation = models.PositiveSmallIntegerField("gen")
 
     harmonized_skill = models.CharField(max_length=2000, blank=True, null=True, default=None)
 
-    rarities = ArrayField(models.IntegerField())
+    rarities = ArrayField(models.PositiveSmallIntegerField())
 
     gamepedia_url = models.URLField()
 
     # ['+', '', '-', '-', '+']
     boonbanes = ArrayField(models.CharField(max_length=3, blank=True))
 
-    alias_dict = {  # Easter eggs
-        "artist": {"アマガイタロー": "nino abi priestess abby aby abigail"},
-        "name": {
-            "Faye": "alm",
-            "Cordelia": "leo caloried f2p",
-            "Caeda": "misaka",
-            "Oliver": "pororo poron",
-            "Linus": "best unit in the game linoes",
-            "Naga": "useless",
-            "Sothis": "useless",
-            "Nowi": "soul",
-            "Corrin": "dum",
-            "Sharena": "fire emblem heroes",
-            "Ingrid": "bulu",
-            "Gunnthrá": "rudar rudraksha",
-            "Felicia": "richy",
-            "Black Knight": "steelux steely",
-            "Edelgard": "karpo",
-        },
-        "title": {"Bride of Rime": "beccy", "Brave Warrior": "bector chet god"},
-        "harmonized_skill": {True: "chet"},
-        ("name", "gender"): {("Robin", "Male"): "moro"},
-    }
-
-    # icon_image = models.ImageField(upload_to=upload_to_dir,
-    #                               blank=True,
-    #                               null=True,)
+    # icon_image = models.ImageField(
+    #     upload_to=upload_to_dir,
+    #     blank=True,
+    #     null=True,
+    # )
 
     def get_max_dragonflower_per_stat(self):
         dragonflowers = 1
@@ -830,7 +831,7 @@ class Skill(models.Model):
     slot = models.CharField(max_length=15, choices=WEAPON_TYPE_PAIRS)
 
     # Sp cost
-    cost = models.IntegerField()
+    cost = models.PositiveSmallIntegerField()
 
     # is_prf?
     is_prf = models.BooleanField()
@@ -847,16 +848,15 @@ class Skill(models.Model):
     hero_stripped_names = ArrayField(models.CharField(max_length=200))
 
     f2p_levels = ArrayField(models.CharField(max_length=25, choices=F2P_LEVEL_PAIRS))
-
     # Smallest rarity where this can be learned
-    rarity = models.IntegerField(
+    rarity = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
     )
 
     release_date = models.DateField(blank=True, null=True)
 
-    book = models.IntegerField(blank=True, null=True)
+    book = models.PositiveSmallIntegerField(blank=True, null=True)
 
     gamepedia_url = models.URLField()
 
@@ -867,8 +867,8 @@ class Skill(models.Model):
     movement_permissions = ArrayField(models.CharField(max_length=15, choices=MOVEMENT_TYPE_PAIRS))
 
     # Weapon only
-    # mt = models.IntegerField(blank=True, null=True)
-    # range = models.IntegerField(blank=True, null=True)
+    # mt = models.PositiveSmallIntegerField(blank=True, null=True)
+    # range = models.PositiveSmallIntegerField(blank=True, null=True)
 
     @property
     def display_heroes(self):

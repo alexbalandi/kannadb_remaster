@@ -2,13 +2,13 @@ $(document).ready(function () {
   $('button.max-btn[data-id="True"]').addClass("active");
 
   var filters = [
-    ["max", 9],
-    ["prf", 10],
-    ["f2p", 11],
-    ["slot", 12],
-    ["book", 13],
-    ["weapon_permissions", 15],
-    ["movement_permissions", 16],
+    ["max", 9, false], // look heroes_2.js for the meaning of these
+    ["prf", 10, false],
+    ["f2p", 11, false],
+    ["slot", 12, false],
+    ["book", 13, false],
+    ["weapon_permissions", 15, false],
+    ["movement_permissions", 16, false],
   ];
 
   $(".stat-range-slider-widget").each(function (index) {
