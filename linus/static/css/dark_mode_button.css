@@ -1,8 +1,8 @@
 /* Default appearance (Light Mode) */
 .dark-mode-btn {
-  background-color: #333;
+  background-color: #e5d9d9;
   border: none;
-  color: #fff;
+  color: #2a2222;
   padding: 5px 15px;
   border-radius: 20px;
   cursor: pointer;
