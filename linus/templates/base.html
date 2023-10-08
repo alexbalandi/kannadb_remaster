@@ -1,6 +1,26 @@
 {% load static i18n %}<!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" href="{% static 'css/dark_mode.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.66/darkreader.min.js"></script>
+    <script>
+      (function() {
+        const body = document.body;
+
+        // Check the state flag in local storage on initial load
+        if (localStorage.getItem("darkMode") === "enabled") {
+          body.classList.add("dark-mode");
+        } else if (
+          localStorage.getItem("darkMode") === null &&
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+        ) {
+            // If no state flag in local storage, check for the OS preference
+          body.classList.add("dark-mode");
+        }
+      })();
+    </script> <!-- Making sure this is inline script to avoid "falshes" of light theme if dark is set -->
+    <script src="{% static 'js/dark_reader.js' %}"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TE330C8ZDZ"></script>
     <script>
@@ -28,13 +48,7 @@
 
     <!-- Latest compiled and minified Bootstrap 4.1.1 CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-
-
-
     {% endblock %}
-    <link rel="stylesheet" href="{% static 'css/dark_mode.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.66/darkreader.min.js"></script>
-    <script src="{% static 'js/dark_reader.js' %}"></script>
   </head>
 
   <body>
