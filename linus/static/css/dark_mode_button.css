@@ -1,3 +1,4 @@
+/* Default appearance (Light Mode) */
 .dark-mode-btn {
   background-color: #333;
   border: none;
@@ -13,7 +14,12 @@
   background-color: #555;
 }
 
-body.dark-mode {
-  background-color: #333;
-  color: #fff;
+/* Appearance when Dark Mode is ON */
+.dark-mode-btn.dark-mode-on {
+  background-color: #fff;
+  color: #333;
+}
+
+.dark-mode-btn.dark-mode-on:hover {
+  background-color: #eee;
 }
