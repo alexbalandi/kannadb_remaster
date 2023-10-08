@@ -7,7 +7,7 @@ from django.views import defaults as default_views
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path("", RedirectView.as_view(url="/feh/"), name="root-redirect-to-feh"),
+    path("", RedirectView.as_view(url="/feh/"), name="home"),
     # path(
     #    "about/",
     #    TemplateView.as_view(template_name="pages/about.html"),
