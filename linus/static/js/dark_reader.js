@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const body = document.body;
 
   function enableDarkMode() {
-    body.classList.add("dark-mode");
+    //body.classList.add("dark-mode");
     DarkReader.enable({
       brightness: 100,
       contrast: 90,
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function disableDarkMode() {
-    body.classList.remove("dark-mode");
+    //body.classList.remove("dark-mode");
     DarkReader.disable();
     localStorage.setItem("darkMode", "disabled");
   }
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (toggleButton) {
     // Handle the button click event
     toggleButton.addEventListener("click", () => {
-      if (body.classList.contains("dark-mode")) {
+      if (localStorage.getItem("darkMode") === "enabled") {
         disableDarkMode();
       } else {
         enableDarkMode();
