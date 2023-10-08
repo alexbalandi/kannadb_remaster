@@ -9,13 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
       contrast: 90,
       sepia: 10,
     });
-    localStorage.setItem("darkMode", "enabled");
   }
 
   function disableDarkMode() {
     //body.classList.remove("dark-mode");
     DarkReader.disable();
-    localStorage.setItem("darkMode", "disabled");
   }
 
   // Check the state flag in local storage on initial load
@@ -28,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
   ) {
     // If no state flag in local storage, check for the OS preference
     enableDarkMode();
+    localStorage.setItem("darkMode", "enabled");
   } else {
     disableDarkMode();
   }
@@ -37,8 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleButton.addEventListener("click", () => {
       if (localStorage.getItem("darkMode") === "enabled") {
         disableDarkMode();
+        localStorage.setItem("darkMode", "disabled");
       } else {
         enableDarkMode();
+        localStorage.setItem("darkMode", "enabled");
       }
     });
   }
