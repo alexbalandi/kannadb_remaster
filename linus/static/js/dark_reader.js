@@ -5,21 +5,11 @@ function enableDarkMode() {
     contrast: 90,
     sepia: 10,
   });
-  // Adjust the button for dark mode
-  const toggleButton = document.getElementById("darkModeToggle");
-  if (toggleButton) {
-    toggleButton.classList.add("dark-mode-on");
-  }
 }
 
 function disableDarkMode() {
   //body.classList.remove("dark-mode");
   DarkReader.disable();
-  // Adjust the button for light mode
-  const toggleButton = document.getElementById("darkModeToggle");
-  if (toggleButton) {
-    toggleButton.classList.remove("dark-mode-on");
-  }
 }
 
 // Check the state flag in local storage on initial load

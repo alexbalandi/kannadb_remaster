@@ -14,13 +14,3 @@
 .dark-mode-btn:hover {
   background-color: #555;
 }
-
-/* Appearance when Dark Mode is ON */
-.dark-mode-btn.dark-mode-on {
-  background-color: #fff;
-  color: #333;
-}
-
-.dark-mode-btn.dark-mode-on:hover {
-  background-color: #eee;
-}
