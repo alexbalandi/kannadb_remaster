@@ -1,0 +1,19 @@
+.dark-mode-btn {
+  background-color: #333;
+  border: none;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+.dark-mode-btn:hover {
+  background-color: #555;
+}
+
+body.dark-mode {
+  background-color: #333;
+  color: #fff;
+}
