@@ -71,6 +71,31 @@ tr.shown td.details-control:not(.detail-header) {
   margin-right: 10px;
 }
 
+/* Styles for the header links */
+.header-links {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 20px;
+  align-items: center; /* Ensure they're vertically centered in the header */
+}
+
+.header-link {
+  margin-left: 8px;
+  margin-right: 8px;
+  padding: 4px 12px; /* Reduced vertical padding to make them smaller in height */
+  text-decoration: none;
+  color: white;
+  background-color: #3366cc; /* Darkened color for less brightness */
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.header-link:hover {
+  background-color: #264d99; /* Darker shade on hover */
+  color: white;
+}
+
 /* ---------------------------------------------------
     CONTENT WRAPPER + SIDEBAR STYLE
 ----------------------------------------------------- */

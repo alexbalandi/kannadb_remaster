@@ -48,6 +48,14 @@
           KannaDB
         </div>
       </a>
+
+      <!-- DB Links in the Header -->
+      <div class="header-links">
+        <a href="{% url 'feh:heroes_list' %}" class="header-link">HeroesDB</a>
+        <a href="{% url 'feh:skills_list' %}" class="header-link">SkillsDB (max)</a>
+        <a href="{% url 'feh:skills_list_all' %}" class="header-link">SkillsDB (all)</a>
+      </div>
+
       <div class="header-credits">
         <small>
           Made by LinusMain and Pororo, revived by Avestus
@@ -61,14 +69,13 @@
         {% endblock %}
       </nav>
 
-    <!-- Page Content -->
+      <!-- Page Content -->
       <div id="content">
         {% block kannadbmain %}
         {% endblock %}
       </div>
     </div>
   </div>
-
 {% endblock %}
 
 {% block extrajs %}
