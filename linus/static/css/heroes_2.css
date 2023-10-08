@@ -71,6 +71,30 @@ tr.shown td.details-control:not(.detail-header) {
   margin-right: 10px;
 }
 
+/* Styles for the header links */
+.header-links {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.header-link {
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: white;
+  background-color: #007bff; /* Color for the button */
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.header-link:hover {
+  background-color: #0056b3; /* Darken color on hover */
+  color: white;
+}
+
 /* ---------------------------------------------------
     CONTENT WRAPPER + SIDEBAR STYLE
 ----------------------------------------------------- */
