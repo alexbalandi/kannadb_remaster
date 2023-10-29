@@ -79,6 +79,7 @@ SLOT_MAP = dict(
     passivea=WEAPON_TYPE.A_SLOT,
     passiveb=WEAPON_TYPE.B_SLOT,
     passivec=WEAPON_TYPE.C_SLOT,
+    passivex=WEAPON_TYPE.X_SLOT,
     assist=WEAPON_TYPE.ASSIST,
     seal=WEAPON_TYPE.SACRED_SEAL,
     special=WEAPON_TYPE.SPECIAL,

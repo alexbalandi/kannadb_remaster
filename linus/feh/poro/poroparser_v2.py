@@ -456,7 +456,7 @@ def finalizeUnitSkills(unit):
             if sr.unlockRarity == 5:
                 # print(sr)
                 sr.isMax = True
-    slots = ["special", "assist", "passivea", "passiveb", "passivec"]
+    slots = ["special", "assist", "passivea", "passiveb", "passivec", "passivex"]
     for slot in slots:
         slotsrs = [slotsr for slotsr in unit.skillReqs if slotsr.slot == slot]
         if slotsrs == []:

@@ -192,6 +192,7 @@ class Migration(migrations.Migration):
                             ("W_91", "B"),
                             ("W_91", "C"),
                             ("W_94", "Sacred Seal"),
+                            ("W_95", "X"),
                         ],
                         max_length=15,
                     ),

@@ -257,6 +257,7 @@ class WEAPON_TYPE(object):
     A_SLOT = "W_91"
     B_SLOT = "W_92"
     C_SLOT = "W_93"
+    X_SLOT = "W_95"
     SACRED_SEAL = "W_94"
 
 
