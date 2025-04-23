@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 
 # Add retry logic here
-def readURL(url, max_retries=3, initial_delay=5):
+def readURL(url, max_retries=3, initial_delay=2):
     """
     Fetches URL content with retries for transient HTTP errors.
     """
