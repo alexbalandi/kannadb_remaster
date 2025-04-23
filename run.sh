@@ -1,6 +1,8 @@
 #!/bin/bash
 python3 manage.py makemigrations
+python3 manage.py makemigrations feh
 python3 manage.py migrate
+python3 manage.py migrate feh
 if [[ "$SKIP_DB_UPDATE" != "True" ]]; then
     python3 manage.py curl_heroes
     python3 manage.py import_heroes
