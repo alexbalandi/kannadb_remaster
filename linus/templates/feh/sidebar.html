@@ -12,7 +12,7 @@
       <div class='filter-buttons {{ filter.btn_class }}'>
         {% for content in filter.content %}
           <button type="button" class="{{ filter.id }}-btn filter-button" data-id="{{ content.0 }}"
-                  {% if content.1.2 %}
+                  {% if content.1|length > 2 and content.1.2 %}
                     data-tippy-content="{{ content.1.2 }}"
                   {% endif %}
           >
