@@ -827,7 +827,7 @@ class Skill(models.Model):
     stripped_name = models.CharField(max_length=200)
 
     # Accelerate special cooldown
-    description = models.CharField(max_length=2000)
+    description = models.TextField()
 
     slot = models.CharField(max_length=15, choices=WEAPON_TYPE_PAIRS)
 
@@ -848,7 +848,6 @@ class Skill(models.Model):
 
     hero_stripped_names = ArrayField(models.CharField(max_length=200))
 
-    f2p_levels = ArrayField(models.CharField(max_length=25, choices=F2P_LEVEL_PAIRS))
     # Smallest rarity where this can be learned
     rarity = models.PositiveSmallIntegerField(
         blank=True,
@@ -866,10 +865,6 @@ class Skill(models.Model):
     weapon_permissions = ArrayField(models.CharField(max_length=15, choices=WEAPON_TYPE_PAIRS))
 
     movement_permissions = ArrayField(models.CharField(max_length=15, choices=MOVEMENT_TYPE_PAIRS))
-
-    # Weapon only
-    # mt = models.PositiveSmallIntegerField(blank=True, null=True)
-    # range = models.PositiveSmallIntegerField(blank=True, null=True)
 
     @property
     def display_heroes(self):
