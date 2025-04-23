@@ -1,5 +1,6 @@
 import pickle
 import ssl
+import time
 import urllib.parse
 import urllib.request
 import warnings
@@ -8,11 +9,45 @@ import certifi
 from bs4 import BeautifulSoup
 
 
-# not stored to file
-def readURL(url):
+# Add retry logic here
+def readURL(url, max_retries=3, initial_delay=5):
+    """
+    Fetches URL content with retries for transient HTTP errors.
+    """
     ssl_context = ssl.create_default_context(cafile=certifi.where())
-    url = urllib.request.urlopen(url, context=ssl_context)
-    return url.read()
+    retries = 0
+    delay = initial_delay
+    while retries < max_retries:
+        try:
+            print(f"Attempt {retries + 1}/{max_retries}: Fetching {url}")
+            response = urllib.request.urlopen(url, context=ssl_context, timeout=60)
+            return response.read()
+
+        except urllib.error.HTTPError as e:
+            if 500 <= e.code < 600:
+                retries += 1
+                if retries < max_retries:
+                    print(f"  HTTP Error {e.code} ({e.reason}). Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                    delay *= 2
+                else:
+                    print(f"  HTTP Error {e.code} ({e.reason}). Max retries reached. Failing.")
+                    raise
+            else:
+                print(f"  HTTP Error {e.code} ({e.reason}). Not retrying.")
+                raise
+
+        except Exception as e:
+            retries += 1
+            if retries < max_retries:
+                print(f"  Network error ({type(e).__name__}: {e}). Retrying in {delay} seconds...")
+                time.sleep(delay)
+                delay *= 2
+            else:
+                print(f"  Network error ({type(e).__name__}: {e}). Max retries reached. Failing.")
+                raise
+
+    raise ConnectionError(f"Failed to fetch {url} after {max_retries} retries.")
 
 
 def readURLSoup(url, parser):
