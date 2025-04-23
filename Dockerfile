@@ -4,6 +4,8 @@ FROM python:3.10
 # Set environment variables for Python (optional but recommended)
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
+# Set the production settings module
+ENV DJANGO_SETTINGS_MODULE=config.settings.production
 
 WORKDIR /app
 
