@@ -40,6 +40,18 @@ def GetPklDirectory():
 class Command(BaseCommand):
     help = "Curl heroes from gamepedia."
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--delay",
+            type=float,
+            default=1.0,
+            help="Delay in seconds between API requests (default: 1.0). Increase if you encounter rate limiting.",
+        )
+
     def handle(self, *args, **options):
+        request_delay = options["delay"]
+        self.stdout.write(f"Using request delay: {request_delay} seconds")
         for phase in range(PHASES):
-            CurlAll(phase, GetPklOutputFile())
+            self.stdout.write(f"Starting phase {phase}...")
+            CurlAll(phase, GetPklOutputFile(), request_delay=request_delay)
+            self.stdout.write(self.style.SUCCESS(f"Phase {phase} completed."))

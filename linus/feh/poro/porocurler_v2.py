@@ -10,9 +10,15 @@ from bs4 import BeautifulSoup
 
 
 # Add retry logic here
-def readURL(url, max_retries=3, initial_delay=2):
+def readURL(url, max_retries=5, initial_delay=2, rate_limit_delay=60):
     """
-    Fetches URL content with retries for transient HTTP errors.
+    Fetches URL content with retries for transient HTTP errors and rate limiting.
+
+    Args:
+        url: URL to fetch
+        max_retries: Maximum number of retry attempts
+        initial_delay: Initial delay in seconds for exponential backoff
+        rate_limit_delay: Delay in seconds when rate limited (default 60 seconds)
     """
     ssl_context = ssl.create_default_context(cafile=certifi.where())
     retries = 0
@@ -21,15 +27,42 @@ def readURL(url, max_retries=3, initial_delay=2):
         try:
             print(f"Attempt {retries + 1}/{max_retries}: Fetching {url}")
             response = urllib.request.urlopen(url, context=ssl_context, timeout=60)
-            return response.read()
+            content = response.read()
+
+            # Check for rate limit errors in XML response
+            try:
+                soup = BeautifulSoup(content, "lxml-xml")
+                if soup.api and soup.api.error:
+                    error_code = soup.api.error.get("code", "")
+                    error_info = soup.api.error.get("info", "")
+                    if "ratelimited" in error_code.lower() or "rate limit" in error_info.lower():
+                        retries += 1
+                        if retries < max_retries:
+                            print(f"  Rate limit detected. Waiting {rate_limit_delay} seconds before retry...")
+                            time.sleep(rate_limit_delay)
+                            # Increase delay for subsequent rate limit hits
+                            rate_limit_delay = min(rate_limit_delay * 1.5, 300)  # Cap at 5 minutes
+                            continue
+                        else:
+                            raise ValueError(f"Rate limited after {max_retries} retries: {error_info}")
+            except Exception:
+                # If XML parsing fails, assume it's valid content
+                pass
+
+            return content
 
         except urllib.error.HTTPError as e:
-            if 500 <= e.code < 600:
+            # Handle HTTP 429 (Too Many Requests) or other rate limit codes
+            if e.code == 429 or (500 <= e.code < 600):
                 retries += 1
                 if retries < max_retries:
-                    print(f"  HTTP Error {e.code} ({e.reason}). Retrying in {delay} seconds...")
-                    time.sleep(delay)
-                    delay *= 2
+                    wait_time = rate_limit_delay if e.code == 429 else delay
+                    print(f"  HTTP Error {e.code} ({e.reason}). Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    if e.code == 429:
+                        rate_limit_delay = min(rate_limit_delay * 1.5, 300)
+                    else:
+                        delay *= 2
                 else:
                     print(f"  HTTP Error {e.code} ({e.reason}). Max retries reached. Failing.")
                     raise
@@ -73,6 +106,13 @@ def verifyTableFields(table, tableFields):
     cargoquery1 = cargoquery + urllib.parse.urlencode(cargoFields)
     # print(cargoquery1)
     curlXML = readURLSoup(cargoquery1, "lxml-xml")
+
+    # Check for errors in the API response
+    if curlXML.api.error:
+        error_code = curlXML.api.error.get("code", "")
+        error_info = curlXML.api.error.get("info", "")
+        raise ValueError(f"API Error ({error_code}): {error_info}\n{curlXML}")
+
     allEntries = curlXML.api.cargoqueryautocomplete.contents
     tableNames = [e.attrs["main_table"] for e in allEntries]
     if table not in tableNames:
@@ -81,7 +121,16 @@ def verifyTableFields(table, tableFields):
     cargoFields["tables"] = table
     cargoquery2 = cargoquery + urllib.parse.urlencode(cargoFields)
     # print(cargoquery2)
+    # Add small delay between verification requests
+    time.sleep(0.5)
     curlXML = readURLSoup(cargoquery2, "lxml-xml")
+
+    # Check for errors in the API response
+    if curlXML.api.error:
+        error_code = curlXML.api.error.get("code", "")
+        error_info = curlXML.api.error.get("info", "")
+        raise ValueError(f"API Error ({error_code}): {error_info}\n{curlXML}")
+
     allEntries = curlXML.api.cargoqueryautocomplete.contents
     fieldNames = [e.contents[0] for e in allEntries]
     for f in tableFields:
@@ -94,7 +143,16 @@ def verifyTableFields(table, tableFields):
 
 
 # :eggplant:
-def getRawDictFromTable(table, tableFields, baseFieldName):
+def getRawDictFromTable(table, tableFields, baseFieldName, request_delay=1.0):
+    """
+    Fetches data from a table with pagination support.
+
+    Args:
+        table: Table name to query
+        tableFields: List of fields to retrieve
+        baseFieldName: Field name to use as the key
+        request_delay: Delay in seconds between paginated requests (default 1.0)
+    """
     verifyTableFields(table, tableFields)
     results = {}
     aliasedTableFields = [f.rsplit("=")[-1] for f in tableFields]
@@ -114,6 +172,12 @@ def getRawDictFromTable(table, tableFields, baseFieldName):
         # print(cargoqueryRun)
         curlXML = readURLSoup(cargoqueryRun, "lxml-xml")
 
+        # Check for errors in the API response
+        if curlXML.api.error:
+            error_code = curlXML.api.error.get("code", "")
+            error_info = curlXML.api.error.get("info", "")
+            raise ValueError(f"API Error ({error_code}): {error_info}\n{curlXML}")
+
         if curlXML.api.cargoquery is None:
             raise ValueError(curlXML)
         allEntries = curlXML.api.cargoquery.contents
@@ -128,11 +192,24 @@ def getRawDictFromTable(table, tableFields, baseFieldName):
             # print('added ' + entryName)
             results[entryName] = entryDict
         cargoFields["offset"] += 500
+        # Add delay between paginated requests to avoid rate limiting
+        if len(allEntries) == 500:  # Only delay if there might be more pages
+            time.sleep(request_delay)
     return results
 
 
 # because leenis likes double dicting :eggplant: :eggplant:
-def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldName):
+def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldName, request_delay=1.0):
+    """
+    Fetches data from a table with pagination support, organizing into nested dictionaries.
+
+    Args:
+        table: Table name to query
+        tableFields: List of fields to retrieve
+        baseFieldName: Field name to use as the primary key
+        secondaryFieldName: Field name to use as the secondary key
+        request_delay: Delay in seconds between paginated requests (default 1.0)
+    """
     verifyTableFields(table, tableFields)
     results = {}
     aliasedTableFields = [f.rsplit("=")[-1] for f in tableFields]
@@ -155,6 +232,12 @@ def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldN
         # print(cargoqueryRun)
         curlXML = readURLSoup(cargoqueryRun, "lxml-xml")
 
+        # Check for errors in the API response
+        if curlXML.api.error:
+            error_code = curlXML.api.error.get("code", "")
+            error_info = curlXML.api.error.get("info", "")
+            raise ValueError(f"API Error ({error_code}): {error_info}\n{curlXML}")
+
         if curlXML.api.cargoquery is None:
             raise ValueError(curlXML)
         allEntries = curlXML.api.cargoquery.contents
@@ -170,6 +253,9 @@ def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldN
             else:
                 results[entryName] = {secondaryName: entryDict}
         cargoFields["offset"] += 500
+        # Add delay between paginated requests to avoid rate limiting
+        if len(allEntries) == 500:  # Only delay if there might be more pages
+            time.sleep(request_delay)
     return results
 
 
@@ -364,25 +450,43 @@ def getDistributions():
 PHASES = 3
 
 
-def CurlAll(phase, pkl_output_file="poro.pkl"):
+def CurlAll(phase, pkl_output_file="poro.pkl", request_delay=1.0):
+    """
+    Fetches all data for a given phase.
+
+    Args:
+        phase: Phase number (0, 1, or 2)
+        pkl_output_file: Base filename for pickle output
+        request_delay: Delay in seconds between requests (default 1.0)
+    """
     assert phase in range(PHASES)
     pkl_output_file = "%s.%d" % (pkl_output_file, phase)
     # curl first think later, smurt
     if phase == 0:
         rawSkills = getRawSkills()
+        time.sleep(request_delay)  # Delay between different table fetches
         rawUpgrades = getRawWeaponUpgrades()
+        time.sleep(request_delay)
         rawEvolutions = getRawEvolutions()
+        time.sleep(request_delay)
         rawUnitStats = getRawUnitStats()
     if phase == 1:
         rawUnitSkills = getRawUnitSkills()
     if phase == 2:
         rawUnits = getRawUnits()
+        time.sleep(request_delay)
         rawSeals = getRawSeals()
+        time.sleep(request_delay)
         rawLegHeroes = getLegendaryHeroes()
+        time.sleep(request_delay)
         rawDuoHeroes = getDuoHeroes()
+        time.sleep(request_delay)
         rawMythicHeroes = getMythicHeroes()
+        time.sleep(request_delay)
         rawHarmonizedHeroes = getHarmonizedHeroes()
+        time.sleep(request_delay)
         rawSummonFocusUnits = getSummonFocusUnits()
+        time.sleep(request_delay)
         rawHeroAvails = getSummoningAvailability()
     # heroDistributions = getDistributions()
 
