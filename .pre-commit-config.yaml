@@ -12,7 +12,7 @@ repos:
       - id: black
         language_version: python3
         types: [python]
-        stages: [commit]
+        stages: [pre-commit]
         always_run: true
         args: ["--config", "pyproject.toml", "."]
   - repo: https://github.com/pycqa/isort
