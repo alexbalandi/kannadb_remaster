@@ -1,0 +1,14 @@
+.git
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.sock
+*.ctl
+staticfiles
+linus/media
+.env
+.envs
+.pytest_cache
+*.egg-info
+node_modules
