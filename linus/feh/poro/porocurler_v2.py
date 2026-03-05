@@ -1,33 +1,73 @@
+import os
 import pickle
-import ssl
 import time
 import urllib.parse
-import urllib.request
 import warnings
 
-import certifi
+import requests
 from bs4 import BeautifulSoup
 
+API_BASE = "https://feheroes.fandom.com/api.php"
+_SESSION = None
 
-# Add retry logic here
+
+def _get_session():
+    """Return an authenticated requests.Session, logging in with bot credentials if available."""
+    global _SESSION
+    if _SESSION is not None:
+        return _SESSION
+
+    session = requests.Session()
+    session.headers.update(
+        {
+            "User-Agent": "KannaDB/1.0 (https://github.com/alexbalandi/kannadb_remaster; bot) python-requests",
+        }
+    )
+
+    bot_user = os.environ.get("FANDOM_BOT_USER")
+    bot_password = os.environ.get("FANDOM_BOT_PASSWORD")
+
+    if bot_user and bot_password:
+        # Step 1: get login token
+        r = session.get(API_BASE, params={"action": "query", "meta": "tokens", "type": "login", "format": "json"})
+        r.raise_for_status()
+        login_token = r.json()["query"]["tokens"]["logintoken"]
+
+        # Step 2: log in
+        r = session.post(
+            API_BASE,
+            data={
+                "action": "login",
+                "lgname": bot_user,
+                "lgpassword": bot_password,
+                "lgtoken": login_token,
+                "format": "json",
+            },
+        )
+        r.raise_for_status()
+        result = r.json().get("login", {})
+        if result.get("result") == "Success":
+            print(f"Logged in to Fandom API as {result.get('lgusername')}")
+        else:
+            print(f"WARNING: Fandom login failed: {result}. Continuing unauthenticated.")
+    else:
+        print("No FANDOM_BOT_USER/FANDOM_BOT_PASSWORD set — scraping unauthenticated.")
+
+    _SESSION = session
+    return _SESSION
+
+
 def readURL(url, max_retries=5, initial_delay=2, rate_limit_delay=60):
-    """
-    Fetches URL content with retries for transient HTTP errors and rate limiting.
-
-    Args:
-        url: URL to fetch
-        max_retries: Maximum number of retry attempts
-        initial_delay: Initial delay in seconds for exponential backoff
-        rate_limit_delay: Delay in seconds when rate limited (default 60 seconds)
-    """
-    ssl_context = ssl.create_default_context(cafile=certifi.where())
+    session = _get_session()
     retries = 0
     delay = initial_delay
+
     while retries < max_retries:
         try:
             print(f"Attempt {retries + 1}/{max_retries}: Fetching {url}")
-            response = urllib.request.urlopen(url, context=ssl_context, timeout=60)
-            content = response.read()
+            response = session.get(url, timeout=60)
+            response.raise_for_status()
+            content = response.content
 
             # Check for rate limit errors in XML response
             try:
@@ -40,34 +80,34 @@ def readURL(url, max_retries=5, initial_delay=2, rate_limit_delay=60):
                         if retries < max_retries:
                             print(f"  Rate limit detected. Waiting {rate_limit_delay} seconds before retry...")
                             time.sleep(rate_limit_delay)
-                            # Increase delay for subsequent rate limit hits
-                            rate_limit_delay = min(rate_limit_delay * 1.5, 300)  # Cap at 5 minutes
+                            rate_limit_delay = min(rate_limit_delay * 1.5, 300)
                             continue
                         else:
                             raise ValueError(f"Rate limited after {max_retries} retries: {error_info}")
+            except ValueError:
+                raise
             except Exception:
-                # If XML parsing fails, assume it's valid content
                 pass
 
             return content
 
-        except urllib.error.HTTPError as e:
-            # Handle HTTP 429 (Too Many Requests) or other rate limit codes
-            if e.code == 429 or (500 <= e.code < 600):
+        except requests.HTTPError as e:
+            code = e.response.status_code
+            if code == 429 or (500 <= code < 600):
                 retries += 1
                 if retries < max_retries:
-                    wait_time = rate_limit_delay if e.code == 429 else delay
-                    print(f"  HTTP Error {e.code} ({e.reason}). Retrying in {wait_time} seconds...")
+                    wait_time = rate_limit_delay if code == 429 else delay
+                    print(f"  HTTP {code}. Retrying in {wait_time} seconds...")
                     time.sleep(wait_time)
-                    if e.code == 429:
+                    if code == 429:
                         rate_limit_delay = min(rate_limit_delay * 1.5, 300)
                     else:
                         delay *= 2
                 else:
-                    print(f"  HTTP Error {e.code} ({e.reason}). Max retries reached. Failing.")
+                    print(f"  HTTP {code}. Max retries reached.")
                     raise
             else:
-                print(f"  HTTP Error {e.code} ({e.reason}). Not retrying.")
+                print(f"  HTTP {code}. Not retrying.")
                 raise
 
         except Exception as e:
@@ -77,7 +117,7 @@ def readURL(url, max_retries=5, initial_delay=2, rate_limit_delay=60):
                 time.sleep(delay)
                 delay *= 2
             else:
-                print(f"  Network error ({type(e).__name__}: {e}). Max retries reached. Failing.")
+                print(f"  Network error ({type(e).__name__}: {e}). Max retries reached.")
                 raise
 
     raise ConnectionError(f"Failed to fetch {url} after {max_retries} retries.")
@@ -100,7 +140,7 @@ def tryStrToInt(intStr):
 # https://feheroes.gamepedia.com/wiki/Special:CargoQuery
 # TODO: Don't need to repeatedly verify by fetching all tablenames
 def verifyTableFields(table, tableFields):
-    cargoquery = "https://feheroes.gamepedia.com/api.php?"
+    cargoquery = API_BASE + "?"
     # action=cargoqueryautocomplete&format=xml
     cargoFields = {"action": "cargoqueryautocomplete", "format": "xml"}
     cargoquery1 = cargoquery + urllib.parse.urlencode(cargoFields)
@@ -143,7 +183,7 @@ def verifyTableFields(table, tableFields):
 
 
 # :eggplant:
-def getRawDictFromTable(table, tableFields, baseFieldName, request_delay=1.0):
+def getRawDictFromTable(table, tableFields, baseFieldName, request_delay=10.0):
     """
     Fetches data from a table with pagination support.
 
@@ -158,7 +198,7 @@ def getRawDictFromTable(table, tableFields, baseFieldName, request_delay=1.0):
     aliasedTableFields = [f.rsplit("=")[-1] for f in tableFields]
     if baseFieldName not in aliasedTableFields:
         raise ValueError(baseFieldName, "not in", tableFields)
-    cargoquery = "https://feheroes.gamepedia.com/api.php?"
+    cargoquery = API_BASE + "?"
     cargoFields = {
         "action": "cargoquery",
         "format": "xml",
@@ -218,7 +258,7 @@ def getRawDoubleDictFromTable(table, tableFields, baseFieldName, secondaryFieldN
     if secondaryFieldName not in aliasedTableFields:
         raise ValueError(secondaryFieldName, "not in", tableFields)
 
-    cargoquery = "https://feheroes.gamepedia.com/api.php?"
+    cargoquery = API_BASE + "?"
     cargoFields = {
         "action": "cargoquery",
         "format": "xml",

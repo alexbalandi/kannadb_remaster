@@ -16,10 +16,10 @@ urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    # path(
-    #    "users/",
-    #    include("linus.users.urls", namespace="users"),
-    # ),
+    path(
+        "users/",
+        include("linus.users.urls", namespace="users"),
+    ),
     url(r"^advanced_filters/", include("advanced_filters.urls")),
     path(
         "feh/",

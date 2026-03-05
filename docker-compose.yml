@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx:/etc/nginx/certs:ro # Mount the certs directory
+    depends_on:
+      - web
+
+  web:
+    build: .
+    env_file:
+      - .env # Load environment variables from .env file
+    # Remove direct port mapping - Nginx handles external access
+    # ports:
+    #  - "8000:4242" # Map host port 8000 to container port 4242 (based on Gunicorn logs)
+    volumes:
+      - .:/app # Mount current directory into /app in the container (optional, for development)
+    depends_on:
+      - db
+      - redis
+    # The command is already defined in the Dockerfile ENTRYPOINT (bash /app/run.sh)
+
+  db:
+    image: postgres:15 # Use official PostgreSQL image
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/ # Persist data locally
+    environment:
+      - POSTGRES_DB=kannadb_local # CHANGE_ME if needed
+      - POSTGRES_USER=kannadb_user # CHANGE_ME
+      - POSTGRES_PASSWORD=kannadb_password # CHANGE_ME (use a strong password)
+    # Comment out the port mapping if direct host access isn't needed and the port conflicts
+    # ports:
+    #   - "5432:5432"
+
+  redis:
+    image: redis:alpine # Use official Redis image
+    volumes:
+      - redis_data:/data # Persist data locally (optional)
+    # Comment out the port mapping if direct host access isn't needed and the port conflicts
+    # ports:
+    #  - "6379:6379"
+
+volumes:
+  postgres_data:
+  redis_data: 
