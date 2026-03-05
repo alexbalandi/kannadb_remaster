@@ -24,7 +24,7 @@ def readURL(url, max_retries=5, initial_delay=2, rate_limit_delay=60):
     retries = 0
     delay = initial_delay
     headers = {
-        "User-Agent": "KannaDB/1.0 (https://github.com/leenis/kannadb; bot) urllib/3",
+        "User-Agent": "KannaDB/1.0 (https://github.com/alexbalandi/kannadb_remaster; bot) urllib/3",
     }
     while retries < max_retries:
         try:
