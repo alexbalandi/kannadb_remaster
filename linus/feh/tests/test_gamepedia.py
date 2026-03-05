@@ -13,6 +13,7 @@ from io import BytesIO
 from unittest.mock import MagicMock, patch
 
 import pytest
+import requests
 
 from linus.feh.poro.porocurler_v2 import (
     getDuoHeroes,
@@ -108,6 +109,31 @@ def _http_error(code: int, reason: str = "Error") -> urllib.error.HTTPError:
     )
 
 
+@pytest.fixture(autouse=True)
+def reset_session(monkeypatch):
+    """Reset the module-level requests.Session singleton between tests."""
+    import linus.feh.poro.porocurler_v2 as mod
+
+    monkeypatch.setattr(mod, "_SESSION", None)
+
+
+def _make_requests_response(content: bytes, status: int = 200):
+    """Build a mock requests.Response object."""
+    mock_resp = MagicMock()
+    mock_resp.content = content
+    mock_resp.status_code = status
+    mock_resp.raise_for_status.return_value = None
+    return mock_resp
+
+
+def _requests_http_error(code: int) -> requests.HTTPError:
+    mock_resp = MagicMock()
+    mock_resp.status_code = code
+    err = requests.HTTPError(response=mock_resp)
+    err.response = mock_resp
+    return err
+
+
 # ---------------------------------------------------------------------------
 # readURL: User-Agent header (the railway_failure.log root cause)
 # ---------------------------------------------------------------------------
@@ -119,93 +145,84 @@ class TestReadURLUserAgent:
 
     def test_sends_user_agent_header(self):
         """readURL must attach a User-Agent so Fandom doesn't 403 us."""
-        with patch("urllib.request.urlopen") as mock_open:
-            mock_open.return_value = _make_response(b"data")
+        import linus.feh.poro.porocurler_v2 as mod
+
+        mock_resp = _make_requests_response(b"data")
+        with patch("requests.Session.get", return_value=mock_resp):
             readURL("https://feheroes.gamepedia.com/api.php?action=test")
 
-        assert mock_open.called
-        request_arg = mock_open.call_args[0][0]
-        assert isinstance(request_arg, urllib.request.Request)
-        # urllib.request.Request normalizes header keys to title-case ("User-agent")
-        headers_lower = {k.lower(): v for k, v in request_arg.headers.items()}
+        headers_lower = {k.lower(): v for k, v in mod._SESSION.headers.items()}
         assert "user-agent" in headers_lower
         assert headers_lower["user-agent"] != ""
 
     def test_returns_content_on_200(self):
-        with patch("urllib.request.urlopen") as mock_open:
-            mock_open.return_value = _make_response(b"hello world")
+        mock_resp = _make_requests_response(b"hello world")
+        with patch("requests.Session.get", return_value=mock_resp):
             result = readURL("https://example.com")
         assert result == b"hello world"
 
     def test_raises_immediately_on_403(self):
         """HTTP 403 must NOT be retried — it's an auth/block issue, retrying won't help."""
-        with patch("urllib.request.urlopen") as mock_open:
-            mock_open.side_effect = _http_error(403, "Forbidden")
-            with pytest.raises(urllib.error.HTTPError) as exc_info:
+        err = _requests_http_error(403)
+        with patch("requests.Session.get", side_effect=err) as mock_get:
+            with pytest.raises(requests.HTTPError) as exc_info:
                 readURL("https://example.com", max_retries=3)
-        assert exc_info.value.code == 403
-        # Must not have retried: only 1 attempt
-        assert mock_open.call_count == 1
+        assert exc_info.value.response.status_code == 403
+        assert mock_get.call_count == 1
 
     def test_raises_immediately_on_404(self):
-        with patch("urllib.request.urlopen") as mock_open:
-            mock_open.side_effect = _http_error(404, "Not Found")
-            with pytest.raises(urllib.error.HTTPError):
+        err = _requests_http_error(404)
+        with patch("requests.Session.get", side_effect=err) as mock_get:
+            with pytest.raises(requests.HTTPError):
                 readURL("https://example.com", max_retries=3)
-        assert mock_open.call_count == 1
+        assert mock_get.call_count == 1
 
     def test_retries_on_429_rate_limit(self):
         """HTTP 429 Too Many Requests must be retried with a delay."""
-        with patch("urllib.request.urlopen") as mock_open, patch("time.sleep") as mock_sleep:
-            mock_open.side_effect = [
-                _http_error(429, "Too Many Requests"),
-                _make_response(b"ok"),
-            ]
+        err = _requests_http_error(429)
+        ok_resp = _make_requests_response(b"ok")
+        with patch("requests.Session.get", side_effect=[err, ok_resp]) as mock_get, patch("time.sleep") as mock_sleep:
             result = readURL("https://example.com", max_retries=3, rate_limit_delay=1)
         assert result == b"ok"
-        assert mock_open.call_count == 2
+        assert mock_get.call_count == 2
         mock_sleep.assert_called_once_with(1)
 
     def test_retries_on_500_server_error(self):
         """5xx errors are transient — must be retried with exponential backoff."""
-        with patch("urllib.request.urlopen") as mock_open, patch("time.sleep"):
-            mock_open.side_effect = [
-                _http_error(503, "Service Unavailable"),
-                _make_response(b"ok"),
-            ]
+        err = _requests_http_error(503)
+        ok_resp = _make_requests_response(b"ok")
+        with patch("requests.Session.get", side_effect=[err, ok_resp]) as mock_get, patch("time.sleep"):
             result = readURL("https://example.com", max_retries=3, initial_delay=1)
         assert result == b"ok"
-        assert mock_open.call_count == 2
+        assert mock_get.call_count == 2
 
     def test_raises_after_max_retries_on_500(self):
-        with patch("urllib.request.urlopen") as mock_open, patch("time.sleep"):
-            mock_open.side_effect = _http_error(500, "Internal Server Error")
-            with pytest.raises(urllib.error.HTTPError):
+        err = _requests_http_error(500)
+        with patch("requests.Session.get", side_effect=err) as mock_get, patch("time.sleep"):
+            with pytest.raises(requests.HTTPError):
                 readURL("https://example.com", max_retries=3, initial_delay=1)
-        assert mock_open.call_count == 3
+        assert mock_get.call_count == 3
 
     def test_retries_on_network_error(self):
-        with patch("urllib.request.urlopen") as mock_open, patch("time.sleep"):
-            mock_open.side_effect = [OSError("connection reset"), _make_response(b"ok")]
+        ok_resp = _make_requests_response(b"ok")
+        with patch("requests.Session.get", side_effect=[ConnectionError("connection reset"), ok_resp]), patch(
+            "time.sleep"
+        ):
             result = readURL("https://example.com", max_retries=3, initial_delay=1)
         assert result == b"ok"
 
     def test_raises_connection_error_after_all_network_retries(self):
-        with patch("urllib.request.urlopen") as mock_open, patch("time.sleep"):
-            mock_open.side_effect = OSError("no route to host")
+        with patch("requests.Session.get", side_effect=ConnectionError("no route to host")), patch("time.sleep"):
             with pytest.raises((OSError, ConnectionError)):
                 readURL("https://example.com", max_retries=2, initial_delay=1)
 
     def test_detects_api_level_rate_limit_in_xml_body(self):
         """Gamepedia sometimes returns 200 with a ratelimited error in the XML body."""
-        with patch("urllib.request.urlopen") as mock_open, patch("time.sleep"):
-            mock_open.side_effect = [
-                _make_response(API_ERROR_RATE_LIMITED),
-                _make_response(b"<?xml version='1.0'?><api><cargoquery/></api>"),
-            ]
+        rate_limited_resp = _make_requests_response(API_ERROR_RATE_LIMITED)
+        ok_resp = _make_requests_response(b"<?xml version='1.0'?><api><cargoquery/></api>")
+        with patch("requests.Session.get", side_effect=[rate_limited_resp, ok_resp]) as mock_get, patch("time.sleep"):
             readURL("https://example.com", max_retries=3, rate_limit_delay=1)
-        # Should have retried after detecting rate limit in XML
-        assert mock_open.call_count == 2
+        assert mock_get.call_count == 2
 
 
 # ---------------------------------------------------------------------------

@@ -9,8 +9,7 @@ from linus.feh.poro.porocurler_v2 import PHASES, CurlAll
 def GetPklOutputFile():
     output_file_root = os.path.join(settings.MEDIA_ROOT, "poro")
 
-    if not os.path.isdir(output_file_root):
-        os.mkdir(output_file_root)
+    os.makedirs(output_file_root, exist_ok=True)
 
     filename = "poro.pkl"
 
@@ -20,8 +19,7 @@ def GetPklOutputFile():
 def GetPklHeroURLFile():
     output_file_root = os.path.join(settings.MEDIA_ROOT, "poro")
 
-    if not os.path.isdir(output_file_root):
-        os.mkdir(output_file_root)
+    os.makedirs(output_file_root, exist_ok=True)
 
     filename = "porohero.pkl"
 
@@ -31,8 +29,7 @@ def GetPklHeroURLFile():
 def GetPklDirectory():
     output_file_root = os.path.join(settings.MEDIA_ROOT, "poro", "icons")
 
-    if not os.path.isdir(output_file_root):
-        os.mkdir(output_file_root)
+    os.makedirs(output_file_root, exist_ok=True)
 
     return output_file_root
 
