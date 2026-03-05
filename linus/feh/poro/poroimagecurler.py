@@ -2,7 +2,11 @@ import json
 import os.path
 import pickle
 import re
+import ssl
 import urllib.parse
+import urllib.request
+
+import certifi
 
 from linus.feh.poro.poroparser_v2 import LoadPoro
 
@@ -36,8 +40,11 @@ def getIconURL(mfname):
 
 
 def readURL(url):
-    url = urllib.request.urlopen(url)
-    return url.read()
+    ssl_context = ssl.create_default_context(cafile=certifi.where())
+    headers = {"User-Agent": "KannaDB/1.0 (https://github.com/leenis/kannadb; bot) urllib/3"}
+    request = urllib.request.Request(url, headers=headers)
+    response = urllib.request.urlopen(request, context=ssl_context, timeout=60)
+    return response.read()
 
 
 def BuildHeroPaths(pkl_output_file="porodb.pkl", pkl_paths_file="heropaths.pkl"):

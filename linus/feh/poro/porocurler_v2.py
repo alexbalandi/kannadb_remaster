@@ -23,10 +23,14 @@ def readURL(url, max_retries=5, initial_delay=2, rate_limit_delay=60):
     ssl_context = ssl.create_default_context(cafile=certifi.where())
     retries = 0
     delay = initial_delay
+    headers = {
+        "User-Agent": "KannaDB/1.0 (https://github.com/leenis/kannadb; bot) urllib/3",
+    }
     while retries < max_retries:
         try:
             print(f"Attempt {retries + 1}/{max_retries}: Fetching {url}")
-            response = urllib.request.urlopen(url, context=ssl_context, timeout=60)
+            request = urllib.request.Request(url, headers=headers)
+            response = urllib.request.urlopen(request, context=ssl_context, timeout=60)
             content = response.read()
 
             # Check for rate limit errors in XML response
@@ -143,7 +147,7 @@ def verifyTableFields(table, tableFields):
 
 
 # :eggplant:
-def getRawDictFromTable(table, tableFields, baseFieldName, request_delay=1.0):
+def getRawDictFromTable(table, tableFields, baseFieldName, request_delay=10.0):
     """
     Fetches data from a table with pagination support.
 

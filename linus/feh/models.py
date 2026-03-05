@@ -665,6 +665,8 @@ class Hero(models.Model):
 
         for game in self.origin_game.split(","):
             code = TEXT_TO_GAME_MAP.get(game, "")
+            if not code:
+                continue
             result.append(
                 dict(
                     code=code,
